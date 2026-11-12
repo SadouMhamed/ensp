@@ -139,3 +139,4 @@ scripts/seed.ts                 first admin
 5. Wire the public pages to the queries + SEO (`generateMetadata`, sitemap)
 6. User management for admins (invite editors)
 7. Deploy to Vercel (add the same env variables)
+# ensp
