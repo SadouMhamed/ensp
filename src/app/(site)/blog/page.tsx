@@ -1,13 +1,32 @@
 import type { Metadata } from "next";
+import { getLatestPosts } from "@/server/queries/posts";
+import { NewsCard } from "@/components/site/news-card";
+import { NoNews } from "@/components/site/no-news";
+import { PageHero } from "@/components/site/page-hero";
+import { Container } from "@/components/site/section";
 
-export const metadata: Metadata = { title: "Blog" };
+export const metadata: Metadata = { title: "Actualités" };
 
-export default function BlogPage() {
+export default async function BlogPage() {
+  const posts = await getLatestPosts(24);
+
   return (
-    <section className="mx-auto max-w-6xl px-4 py-16">
-      <h1 className="text-3xl font-bold">Blog</h1>
-      {/* TODO: list getPublishedPosts() from src/server/queries/posts.ts */}
-      <p className="mt-4 text-muted-foreground">Articles will appear here.</p>
-    </section>
+    <>
+      <PageHero
+        eyebrow="Actualités"
+        title="Les dernières nouvelles de l'ENSP"
+      />
+      <Container className="py-16 md:py-24">
+        {posts.length === 0 ? (
+          <NoNews />
+        ) : (
+          <div className="grid gap-x-8 gap-y-14 md:grid-cols-2 lg:grid-cols-3">
+            {posts.map((post) => (
+              <NewsCard key={post.id} post={post} />
+            ))}
+          </div>
+        )}
+      </Container>
+    </>
   );
 }

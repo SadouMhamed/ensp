@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { usePathname } from "next/navigation";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
@@ -7,6 +8,7 @@ import { ThemeToggle } from "./theme-toggle";
 
 const titles: [prefix: string, title: string][] = [
   ["/dashboard/posts/new", "New article"],
+  ["/dashboard/posts/", "Edit article"],
   ["/dashboard/posts", "Articles"],
   ["/dashboard/media", "Media library"],
   ["/dashboard/sections", "Website sections"],
@@ -16,19 +18,25 @@ const titles: [prefix: string, title: string][] = [
 ];
 
 export function DashboardHeader() {
-  const pathname = usePathname();
-  const title = titles.find(([prefix]) => pathname.startsWith(prefix))?.[1] ?? "Dashboard";
-
   return (
     <header className="flex h-(--header-height) shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height)">
       <div className="flex w-full items-center gap-1 px-4 lg:gap-2 lg:px-6">
         <SidebarTrigger className="-ml-1" />
         <Separator orientation="vertical" className="mx-2 h-4 data-vertical:self-auto" />
-        <h1 className="text-base font-medium">{title}</h1>
+        {/* Reading the URL is request data on dynamic pages (e.g. /posts/[id]): keep it in Suspense. */}
+        <Suspense fallback={<h1 className="text-base font-medium">Dashboard</h1>}>
+          <PageTitle />
+        </Suspense>
         <div className="ml-auto flex items-center gap-2">
           <ThemeToggle />
         </div>
       </div>
     </header>
   );
+}
+
+function PageTitle() {
+  const pathname = usePathname();
+  const title = titles.find(([prefix]) => pathname.startsWith(prefix))?.[1] ?? "Dashboard";
+  return <h1 className="text-base font-medium">{title}</h1>;
 }

@@ -1,21 +1,16 @@
 "use client";
 
 import { ThemeProvider as NextThemesProvider } from "next-themes";
-import { Toaster } from "@/components/ui/sonner";
 
 /**
- * Dark mode is a dashboard feature:
- * - the dashboard layout uses <ThemeProvider> (light / dark / system, saved in localStorage)
- * - the public site and login use <ThemeProvider forcedTheme="light">
- * Each layout mounts its own provider, so moving between them re-applies the right theme.
+ * One theme provider for the whole app (mounted once in the root layout).
+ * - The dashboard follows the user's choice (light / dark / system, saved in localStorage).
+ * - The public site and login stay light: their layouts add `data-force-light`, and
+ *   globals.css ignores the dark theme while such an element is on the page.
+ * Mounting it once avoids React's "script tag" dev error that appeared when each
+ * layout mounted its own provider during client-side navigation.
  */
-export function ThemeProvider({
-  children,
-  forcedTheme,
-}: {
-  children: React.ReactNode;
-  forcedTheme?: "light" | "dark";
-}) {
+export function ThemeProvider({ children }: { children: React.ReactNode }) {
   return (
     <NextThemesProvider
       attribute="class"
@@ -23,10 +18,8 @@ export function ThemeProvider({
       enableSystem
       disableTransitionOnChange
       storageKey="dashboard-theme"
-      forcedTheme={forcedTheme}
     >
       {children}
-      <Toaster richColors />
     </NextThemesProvider>
   );
 }

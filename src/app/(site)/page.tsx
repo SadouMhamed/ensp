@@ -1,11 +1,23 @@
+import { CeoMessage } from "@/components/site/home/ceo-message";
+import { Hero } from "@/components/site/home/hero";
+import { LatestNews } from "@/components/site/home/latest-news";
+import { Organisation } from "@/components/site/home/organisation";
+import { Presentation } from "@/components/site/home/presentation";
+import { Strengths } from "@/components/site/home/strengths";
+import { Vision } from "@/components/site/home/vision";
+
+// Page d'accueil : héro → Présentation → Organisation → Notre Vision →
+// Nos Atouts Clés → Mot du PDG → Actualités. Textes dans src/content/site.ts.
 export default function HomePage() {
   return (
-    <section className="mx-auto max-w-6xl px-4 py-24">
-      <h1 className="text-4xl font-bold tracking-tight">Welcome to ENSP</h1>
-      <p className="mt-4 max-w-2xl text-muted-foreground">
-        {/* TODO: read the "home_hero" row from site_sections (src/server/queries/site.ts) */}
-        This hero text and image will come from the dashboard.
-      </p>
-    </section>
+    <>
+      <Hero />
+      <Presentation />
+      <Organisation />
+      <Vision />
+      <Strengths />
+      <CeoMessage />
+      <LatestNews />
+    </>
   );
 }

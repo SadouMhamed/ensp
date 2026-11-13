@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import { BRAND_NAME, Logo } from "@/components/brand/logo";
 import { LoginForm } from "./login-form";
 
-export const metadata: Metadata = { title: "Login" };
+export const metadata: Metadata = { title: "Connexion" };
 
 // Layout: shadcn login-02 block (form on the left, visual panel on the right on large screens).
 export default function LoginPage() {
@@ -38,7 +38,9 @@ export default function LoginPage() {
             <Logo variant="full" size={160} priority />
           </div>
           <p className="max-w-md text-2xl font-semibold leading-snug"></p>
-          <p className="mt-3 text-sm opacity-80">{BRAND_NAME} dashboard</p>
+          <p className="mt-3 text-sm opacity-80">
+            Tableau de bord {BRAND_NAME}
+          </p>
         </div>
       </div>
     </div>
