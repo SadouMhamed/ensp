@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/dal";
+import { can } from "@/lib/permissions";
 import { ALLOWED_MIME_TYPES, MAX_UPLOAD_BYTES, createUploadUrl, publicUrl } from "@/lib/storage";
 import { uploadRequestSchema } from "@/lib/validations/media";
 
@@ -10,6 +11,7 @@ import { uploadRequestSchema } from "@/lib/validations/media";
 export async function POST(request: Request) {
   const user = await getCurrentUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!can(user, "media")) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const parsed = uploadRequestSchema.safeParse(await request.json());
   if (!parsed.success) return NextResponse.json({ error: "Invalid request" }, { status: 400 });

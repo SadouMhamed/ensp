@@ -3,13 +3,23 @@
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 import { signIn } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
+import {
+  Field,
+  FieldDescription,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 
-export function LoginForm() {
+// Design: shadcn login-02 block. GitHub login, "Sign up" and "Forgot password" removed
+// (accounts are created by an admin; no password-reset email is set up yet).
+export function LoginForm({
+  className,
+  ...props
+}: React.ComponentProps<"form">) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [pending, setPending] = useState(false);
@@ -22,8 +32,8 @@ export function LoginForm() {
       email: String(form.get("email")),
       password: String(form.get("password")),
     });
-    setPending(false);
     if (error) {
+      setPending(false);
       toast.error(error.message ?? "Invalid email or password");
       return;
     }
@@ -33,28 +43,48 @@ export function LoginForm() {
   }
 
   return (
-    <Card className="w-full max-w-sm">
-      <CardHeader>
-        <CardTitle>Sign in</CardTitle>
-        <CardDescription>Access the company dashboard</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={onSubmit}>
-          <FieldGroup>
-            <Field>
-              <FieldLabel htmlFor="email">Email</FieldLabel>
-              <Input id="email" name="email" type="email" autoComplete="email" required />
-            </Field>
-            <Field>
-              <FieldLabel htmlFor="password">Password</FieldLabel>
-              <Input id="password" name="password" type="password" autoComplete="current-password" required />
-            </Field>
-            <Button type="submit" disabled={pending} className="w-full">
-              {pending ? "Signing in…" : "Sign in"}
-            </Button>
-          </FieldGroup>
-        </form>
-      </CardContent>
-    </Card>
+    <form
+      onSubmit={onSubmit}
+      className={cn("flex flex-col gap-6", className)}
+      {...props}
+    >
+      <FieldGroup>
+        <div className="flex flex-col items-center gap-1 text-center">
+          <h1 className="text-2xl font-bold">Login to your account</h1>
+          <p className="text-sm text-balance text-muted-foreground">
+            Enter your email below to access the dashboard
+          </p>
+        </div>
+        <Field>
+          <FieldLabel htmlFor="email">Email</FieldLabel>
+          <Input
+            id="email"
+            name="email"
+            type="email"
+            autoComplete="email"
+            placeholder="you@company.com"
+            required
+          />
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="password">Password</FieldLabel>
+          <Input
+            id="password"
+            name="password"
+            type="password"
+            autoComplete="current-password"
+            required
+          />
+        </Field>
+        <Field>
+          <Button type="submit" disabled={pending}>
+            {pending ? "Logging in…" : "Login"}
+          </Button>
+          <FieldDescription className="text-center">
+            Accounts are created by an administrator.
+          </FieldDescription>
+        </Field>
+      </FieldGroup>
+    </form>
   );
 }

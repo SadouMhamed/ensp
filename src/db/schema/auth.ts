@@ -12,7 +12,13 @@ export const user = pgTable("user", {
     .defaultNow()
     .$onUpdate(() => /* @__PURE__ */ new Date())
     .notNull(),
-  role: text("role").default("editor"),
+  // admin plugin
+  role: text("role").default("editor"), // "admin" | "editor"
+  banned: boolean("banned").default(false),
+  banReason: text("ban_reason"),
+  banExpires: timestamp("ban_expires"),
+  // our own: what an editor may manage ("posts" | "media" | "sections"); admins have everything
+  permissions: text("permissions").array().notNull().default([]),
 });
 
 export const session = pgTable(
@@ -27,6 +33,7 @@ export const session = pgTable(
       .notNull(),
     ipAddress: text("ip_address"),
     userAgent: text("user_agent"),
+    impersonatedBy: text("impersonated_by"), // admin plugin
     userId: text("user_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),

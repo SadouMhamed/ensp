@@ -5,11 +5,11 @@ import { updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { db } from "@/db";
 import { posts } from "@/db/schema";
-import { requireAdmin, requireUser } from "@/lib/dal";
+import { requirePermission } from "@/lib/dal";
 import { postSchema, type PostInput } from "@/lib/validations/post";
 
 export async function createPost(input: PostInput) {
-  const user = await requireUser(); // ALWAYS check auth inside actions
+  const user = await requirePermission("posts"); // ALWAYS check access inside actions
   const data = postSchema.parse(input);
 
   const [post] = await db
@@ -26,7 +26,7 @@ export async function createPost(input: PostInput) {
 }
 
 export async function deletePost(id: string) {
-  await requireAdmin(); // only admins can delete
+  await requirePermission("posts");
   await db.delete(posts).where(eq(posts.id, id));
   updateTag("posts");
 }
