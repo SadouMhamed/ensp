@@ -48,7 +48,7 @@ Add more with `npx shadcn@latest add <name>`.
 - `src/lib/dal.ts`: **Data Access Layer**: `getCurrentUser()`, `requireUser()`, `requireAdmin()`.
   Call these in every dashboard page **and every Server Action**.
 - `src/proxy.ts`: fast redirect of `/dashboard/*` → `/login` when there's no session cookie.
-- `scripts/seed.ts` (`npm run db:seed`): creates the first **admin** account from `.env`.
+- `scripts/seed.ts` (`npm run db:seed`): creates the first **admin** account from `.env`. Everyone else is added from Dashboard → Users.
 
 ### Step 5 — Media, validation, editor libraries
 - `src/lib/storage.ts`: R2 client, signed upload URLs, delete, allowed file types (50 MB max).
@@ -137,6 +137,6 @@ scripts/seed.ts                 first admin
 3. Media library: upload (signed URL), grid view, replace, delete (block delete if in use)
 4. Website sections editor (hero / banners from `site_sections`)
 5. Wire the public pages to the queries + SEO (`generateMetadata`, sitemap)
-6. User management for admins (invite editors)
+6. ✅ User management: Dashboard → **Users** (admins only): create accounts, choose role (Admin / Editor) and privileges (Articles, Media library, Website sections), edit access, delete accounts. Roles live in `src/lib/permissions.ts`; access is checked on the server in `src/lib/dal.ts` (`requireAdmin`, `requirePermission`).
 7. Deploy to Vercel (add the same env variables)
 # ensp
