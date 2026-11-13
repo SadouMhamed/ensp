@@ -6,12 +6,20 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { signIn } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
-import { Field, FieldDescription, FieldGroup, FieldLabel } from "@/components/ui/field";
+import {
+  Field,
+  FieldDescription,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 
 // Design: shadcn login-02 block. GitHub login, "Sign up" and "Forgot password" removed
 // (accounts are created by an admin; no password-reset email is set up yet).
-export function LoginForm({ className, ...props }: React.ComponentProps<"form">) {
+export function LoginForm({
+  className,
+  ...props
+}: React.ComponentProps<"form">) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [pending, setPending] = useState(false);
@@ -35,7 +43,11 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"form">)
   }
 
   return (
-    <form onSubmit={onSubmit} className={cn("flex flex-col gap-6", className)} {...props}>
+    <form
+      onSubmit={onSubmit}
+      className={cn("flex flex-col gap-6", className)}
+      {...props}
+    >
       <FieldGroup>
         <div className="flex flex-col items-center gap-1 text-center">
           <h1 className="text-2xl font-bold">Login to your account</h1>

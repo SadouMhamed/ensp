@@ -37,9 +37,7 @@ export default function LoginPage() {
           <div className="mb-8 w-fit bg-white p-4 shadow-lg ring-1 ring-black/5">
             <Logo variant="full" size={160} priority />
           </div>
-          <p className="max-w-md text-2xl font-semibold leading-snug">
-            Manage your website content: articles, images and pages, all in one place.
-          </p>
+          <p className="max-w-md text-2xl font-semibold leading-snug"></p>
           <p className="mt-3 text-sm opacity-80">{BRAND_NAME} dashboard</p>
         </div>
       </div>
