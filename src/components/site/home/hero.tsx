@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowRightIcon, ChevronsDownIcon } from "lucide-react";
 import { home } from "@/content/site";
 import { cn } from "@/lib/utils";
-import { getHeroSection } from "@/server/queries/sections";
+import { getSection } from "@/server/queries/sections";
 import { buttonVariants } from "@/components/ui/button";
 import { Media } from "@/components/site/media";
 import { Container } from "../section";
@@ -16,7 +16,7 @@ import { Container } from "../section";
  */
 export async function Hero() {
   const { hero } = home;
-  const { visible, content } = await getHeroSection();
+  const { visible, content } = await getSection("home_hero");
   if (!visible) return null;
   const slides = content.slides;
   const total = String(slides.length).padStart(2, "0");

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { MailIcon } from "lucide-react";
-import { site } from "@/content/site";
+import { getSection } from "@/server/queries/sections";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import { Media } from "@/components/site/media";
@@ -10,7 +10,8 @@ import { Container, DisplayHeading, Eyebrow } from "@/components/site/section";
 export const metadata: Metadata = { title: "Carrières" };
 
 // ⚠️ Textes provisoires : à remplacer par les informations de recrutement de l'ENSP.
-export default function CareersPage() {
+export default async function CareersPage() {
+  const { content: contact } = await getSection("contact");
   return (
     <>
       <PageHero
@@ -31,7 +32,7 @@ export default function CareersPage() {
               profil sera ouvert.
             </p>
             <a
-              href={`mailto:${site.contact.email}?subject=Candidature`}
+              href={`mailto:${contact.email}?subject=Candidature`}
               className={cn(buttonVariants({ size: "lg" }), "h-12 w-fit px-6")}
             >
               <MailIcon data-icon="inline-start" />

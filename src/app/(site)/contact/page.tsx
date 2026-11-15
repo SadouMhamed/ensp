@@ -9,7 +9,9 @@ import {
   PhoneIcon,
   PrinterIcon,
 } from "lucide-react";
-import { departmentContacts, locations, site, telHref } from "@/content/site";
+import { site, telHref } from "@/content/site";
+import { LOCATION_KIND_LABELS } from "@/lib/validations/sections";
+import { getSection } from "@/server/queries/sections";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import {
@@ -29,16 +31,10 @@ export const metadata: Metadata = {
     "Coordonnées du siège social de l'ENSP à Hassi Messaoud, de l'antenne d'Alger et des directions régionales.",
 };
 
-const kindLabel: Record<(typeof locations)[number]["kind"], string> = {
-  siege: "Siège",
-  antenne: "Antenne",
-  operations: "Direction opérationnelle",
-  region: "Direction régionale",
-  district: "District",
-};
-
-export default function ContactPage() {
-  const c = site.contact;
+// Coordonnées, contacts par service et implantations : modifiables dans le tableau de bord
+// (Website sections → Contact).
+export default async function ContactPage() {
+  const { content: c } = await getSection("contact");
   const headOffice = [
     { icon: MapPinIcon, label: "Adresse", value: c.address },
     {
@@ -47,14 +43,16 @@ export default function ContactPage() {
       value: c.phone,
       href: telHref(c.phone),
     },
-    { icon: PrinterIcon, label: "Fax", value: c.fax },
+    ...(c.fax ? [{ icon: PrinterIcon, label: "Fax", value: c.fax }] : []),
     {
       icon: MailIcon,
       label: "E-mail",
       value: c.email,
       href: `mailto:${c.email}`,
     },
-    { icon: ClockIcon, label: "Horaires", value: c.hours },
+    ...(c.hours
+      ? [{ icon: ClockIcon, label: "Horaires", value: c.hours }]
+      : []),
     {
       icon: GlobeIcon,
       label: "Site web",
@@ -110,15 +108,17 @@ export default function ContactPage() {
                   coordinates="31.7043° N, 6.0557° E"
                   badge="Siège"
                 />
-                <a
-                  href={c.mapUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className={buttonVariants({ className: "w-fit shrink-0" })}
-                >
-                  Itinéraire sur Google Maps
-                  <ExternalLinkIcon data-icon="inline-end" aria-hidden />
-                </a>
+                {c.mapUrl ? (
+                  <a
+                    href={c.mapUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className={buttonVariants({ className: "w-fit shrink-0" })}
+                  >
+                    Itinéraire sur Google Maps
+                    <ExternalLinkIcon data-icon="inline-end" aria-hidden />
+                  </a>
+                ) : null}
               </div>
             </CardContent>
           </Card>
@@ -133,9 +133,9 @@ export default function ContactPage() {
             </CardHeader>
             <CardContent>
               <ul className="flex flex-col divide-y">
-                {departmentContacts.map((d) => (
+                {c.departments.map((d) => (
                   <li
-                    key={d.email}
+                    key={d.id}
                     className="flex flex-col gap-0.5 py-3 text-sm first:pt-0 last:pb-0"
                   >
                     <span className="font-medium">{d.title}</span>
@@ -161,11 +161,11 @@ export default function ContactPage() {
             description="L'ENSP est présente sur les principaux champs pétroliers et gaziers du pays."
           />
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {locations.map((l) => (
-              <Card key={l.title} size="sm">
+            {c.locations.map((l) => (
+              <Card key={l.id} size="sm">
                 <CardHeader className="gap-2">
                   <Badge variant="secondary" className="w-fit">
-                    {kindLabel[l.kind]}
+                    {LOCATION_KIND_LABELS[l.kind]}
                   </Badge>
                   <CardTitle>{l.title}</CardTitle>
                 </CardHeader>

@@ -4,51 +4,61 @@ import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { siteSections } from "@/db/schema";
 import {
-  HERO_KEY,
-  heroDefault,
-  heroSchema,
-  type HeroContent,
+  SECTIONS,
+  type SectionContent,
+  type SectionKey,
 } from "@/lib/validations/sections";
 
-export type SectionState<T> = {
+export type SectionState<K extends SectionKey> = {
   visible: boolean;
-  content: T;
-  /** false = never edited, the default content from site.ts is shown */
+  content: SectionContent<K>;
+  /** false = never edited: the original content (site.ts) is shown */
   saved: boolean;
   updatedAt: Date | null;
 };
 
-async function readHero(): Promise<SectionState<HeroContent>> {
+async function readSection<K extends SectionKey>(
+  key: K,
+): Promise<SectionState<K>> {
+  const def = SECTIONS[key];
+  const defaults = def.defaults as SectionContent<K>;
   const row = await db.query.siteSections.findFirst({
-    where: eq(siteSections.key, HERO_KEY),
+    where: eq(siteSections.key, key),
   });
-  if (!row) {
-    return {
-      visible: true,
-      content: heroDefault,
-      saved: false,
-      updatedAt: null,
-    };
-  }
-  const parsed = heroSchema.safeParse(row.data);
+  if (!row)
+    return { visible: true, content: defaults, saved: false, updatedAt: null };
+
+  const parsed = def.schema.safeParse(row.data);
   return {
-    visible: row.visible,
-    // Invalid or empty saved content → fall back to the default so the site never breaks.
-    content: parsed.success ? parsed.data : heroDefault,
+    visible: def.hideable ? row.visible : true,
+    // Invalid or empty saved content → fall back to the original so the site never breaks.
+    content: parsed.success ? (parsed.data as SectionContent<K>) : defaults,
     saved: parsed.success,
     updatedAt: row.updatedAt,
   };
 }
 
-/** Website: cached, refreshed when the dashboard saves (updateTag("section:home_hero")). */
-export async function getHeroSection() {
+/** Website: cached, refreshed when the dashboard saves (updateTag("section:<key>")). */
+export async function getSection<K extends SectionKey>(key: K) {
   "use cache";
-  cacheTag(`section:${HERO_KEY}`);
+  cacheTag(`section:${key}`);
   cacheLife("days");
-  return readHero();
+  return readSection(key);
 }
 
 /** Dashboard editor: always fresh. */
-export async function getHeroSectionForEdit() {
-  return readHero();
+export async function getSectionForEdit<K extends SectionKey>(key: K) {
+  return readSection(key);
+}
+
+/** Dashboard list: which sections were edited / hidden. */
+export async function getSectionStatuses() {
+  const rows = await db
+    .select({
+      key: siteSections.key,
+      visible: siteSections.visible,
+      updatedAt: siteSections.updatedAt,
+    })
+    .from(siteSections);
+  return new Map(rows.map((r) => [r.key, r]));
 }

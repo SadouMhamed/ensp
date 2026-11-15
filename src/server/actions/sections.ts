@@ -6,69 +6,81 @@ import { db } from "@/db";
 import { media, siteSections } from "@/db/schema";
 import { requirePermission } from "@/lib/dal";
 import {
-  HERO_KEY,
-  heroSchema,
-  type HeroContent,
+  SECTIONS,
+  collectImages,
+  isSectionKey,
+  type SectionContent,
+  type SectionKey,
 } from "@/lib/validations/sections";
 
 export type SaveSectionResult = { ok: true } | { ok: false; error: string };
 
 /**
- * Save the home page hero (slides + visible). Requires the "Website sections" privilege.
- * The website is refreshed right away (updateTag).
+ * Save a website section (content + visible). Requires the "Website sections" privilege.
+ * The content is checked with the section's rules, library photos get their address from
+ * the database, and the website is refreshed right away (updateTag).
  */
-export async function saveHeroSection(
-  input: HeroContent,
+export async function saveSection<K extends SectionKey>(
+  key: K,
+  input: SectionContent<K>,
   visible: boolean,
 ): Promise<SaveSectionResult> {
   await requirePermission("sections"); // ALWAYS check access inside actions
-  const parsed = heroSchema.safeParse(input);
+  if (!isSectionKey(key)) return { ok: false, error: "Unknown section." };
+  const def = SECTIONS[key];
+
+  const parsed = def.schema.safeParse(input);
   if (!parsed.success)
     return { ok: false, error: parsed.error.issues[0].message };
   const content = parsed.data;
 
-  // Library photos: take the address from the database (never trust the browser),
-  // and refuse outside addresses.
-  const ids = content.slides.flatMap((s) =>
-    s.image?.mediaId ? [s.image.mediaId] : [],
-  );
+  // Photos: library photos take their address from the database (never trust the browser);
+  // other photos must be files of the website (/images/…).
+  const images = collectImages(content);
+  const ids = [
+    ...new Set(images.flatMap((i) => (i.mediaId ? [i.mediaId] : []))),
+  ];
   const rows = ids.length
     ? await db
         .select({ id: media.id, url: media.url })
         .from(media)
         .where(inArray(media.id, ids))
     : [];
-  for (const slide of content.slides) {
-    if (!slide.image) continue;
-    if (slide.image.mediaId) {
-      const row = rows.find((r) => r.id === slide.image!.mediaId);
+  for (const image of images) {
+    if (image.mediaId) {
+      const row = rows.find((r) => r.id === image.mediaId);
       if (!row)
         return {
           ok: false,
-          error: `The photo of "${slide.title}" no longer exists in the media library.`,
+          error:
+            "A photo of this section no longer exists in the media library.",
         };
-      slide.image.url = row.url;
-    } else if (!slide.image.url.startsWith("/images/")) {
-      return { ok: false, error: `Invalid photo for "${slide.title}".` };
+      image.url = row.url;
+    } else if (!image.url.startsWith("/images/")) {
+      return { ok: false, error: "Invalid photo address." };
     }
   }
 
+  const isVisible = def.hideable ? visible : true;
   await db
     .insert(siteSections)
-    .values({ key: HERO_KEY, data: content, visible })
+    .values({ key, data: content, visible: isVisible })
     .onConflictDoUpdate({
       target: siteSections.key,
-      set: { data: content, visible, updatedAt: new Date() },
+      set: { data: content, visible: isVisible, updatedAt: new Date() },
     });
 
-  updateTag(`section:${HERO_KEY}`);
+  updateTag(`section:${key}`);
   return { ok: true };
 }
 
-/** Go back to the original hero (texts and photos from site.ts): removes the saved version. */
-export async function resetHeroSection(): Promise<SaveSectionResult> {
+/** Go back to the original content of a section (site.ts): removes the saved version. */
+export async function resetSection(
+  key: SectionKey,
+): Promise<SaveSectionResult> {
   await requirePermission("sections");
-  await db.delete(siteSections).where(eq(siteSections.key, HERO_KEY));
-  updateTag(`section:${HERO_KEY}`);
+  if (!isSectionKey(key)) return { ok: false, error: "Unknown section." };
+  await db.delete(siteSections).where(eq(siteSections.key, key));
+  updateTag(`section:${key}`);
   return { ok: true };
 }

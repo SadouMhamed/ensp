@@ -205,7 +205,7 @@ export default function StickyContentWrapper({
         <div className="relative flex-1 lg:w-[42%] lg:flex-none">
           {items.map((item, i) => (
             <div
-              key={item.heading}
+              key={i}
               ref={(el) => {
                 contentRefs.current[i] = el;
               }}
@@ -223,9 +223,9 @@ export default function StickyContentWrapper({
               <h3 className="text-[7vw] leading-[1.05] font-medium tracking-tight text-foreground sm:text-[5vw] lg:text-[3.2vw]">
                 {item.heading}
               </h3>
-              {item.paragraphs?.map((p) => (
+              {item.paragraphs?.map((p, pi) => (
                 <p
-                  key={p}
+                  key={pi}
                   className="text-[4vw] leading-relaxed text-muted-foreground sm:text-[2.4vw] lg:text-[1.15vw]"
                 >
                   {p}
@@ -233,9 +233,9 @@ export default function StickyContentWrapper({
               ))}
               {item.list && item.list.length > 0 ? (
                 <ul className="flex flex-col gap-2 lg:gap-[0.6vw]">
-                  {item.list.map((li) => (
+                  {item.list.map((li, lii) => (
                     <li
-                      key={li}
+                      key={lii}
                       className="flex gap-3 text-[3.6vw] leading-snug text-muted-foreground sm:text-[2.2vw] lg:text-[1.05vw]"
                     >
                       <span className="mt-[0.5em] size-1.5 shrink-0 rounded-full bg-primary" />
@@ -262,7 +262,7 @@ export default function StickyContentWrapper({
         <div className="relative h-[34%] w-full shrink-0 overflow-hidden rounded-2xl lg:h-full lg:w-1/2 lg:rounded-none">
           {items.map((item, i) => (
             <div
-              key={item.heading}
+              key={i}
               ref={(el) => {
                 imageRefs.current[i] = el;
               }}

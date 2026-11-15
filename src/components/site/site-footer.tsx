@@ -2,10 +2,15 @@ import Link from "next/link";
 import { ClockIcon, MailIcon, MapPinIcon, PhoneIcon } from "lucide-react";
 import { BRAND_NAME, Logo } from "@/components/brand/logo";
 import { footerColumns, site, telHref } from "@/content/site";
+import { getSection } from "@/server/queries/sections";
 import { StickyFooter } from "@/components/ui/sticky-footer";
 
-/** Website footer: the sticky "reveal" footer, filled with ENSP's content. */
-export function SiteFooter() {
+/**
+ * Website footer: the sticky "reveal" footer, filled with ENSP's content.
+ * Contact details come from the dashboard (Website sections → Contact).
+ */
+export async function SiteFooter() {
+  const { content: contact } = await getSection("contact");
   return (
     <StickyFooter
       brand={
@@ -24,30 +29,29 @@ export function SiteFooter() {
               className="mt-0.5 size-4 shrink-0 text-primary"
               aria-hidden
             />
-            {site.contact.address}
+            {contact.address}
           </li>
           <li className="flex items-center gap-2">
             <PhoneIcon className="size-4 shrink-0 text-primary" aria-hidden />
-            <a
-              href={telHref(site.contact.phone)}
-              className="hover:text-foreground"
-            >
-              {site.contact.phone}
+            <a href={telHref(contact.phone)} className="hover:text-foreground">
+              {contact.phone}
             </a>
           </li>
           <li className="flex items-center gap-2">
             <MailIcon className="size-4 shrink-0 text-primary" aria-hidden />
             <a
-              href={`mailto:${site.contact.email}`}
+              href={`mailto:${contact.email}`}
               className="hover:text-foreground"
             >
-              {site.contact.email}
+              {contact.email}
             </a>
           </li>
-          <li className="flex items-center gap-2">
-            <ClockIcon className="size-4 shrink-0 text-primary" aria-hidden />
-            {site.contact.hours}
-          </li>
+          {contact.hours ? (
+            <li className="flex items-center gap-2">
+              <ClockIcon className="size-4 shrink-0 text-primary" aria-hidden />
+              {contact.hours}
+            </li>
+          ) : null}
         </ul>
       }
       groups={footerColumns.map((col) => ({
