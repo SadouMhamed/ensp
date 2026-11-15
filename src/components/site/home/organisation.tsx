@@ -15,7 +15,7 @@ const icons: Record<string, LucideIcon> = {
   functions: UsersRoundIcon,
 };
 
-/** 2. Organisation : introduction, 3 piliers, puis l'organigramme (onglets). */
+/** 2. Organisation : introduction, 3 piliers, puis l'organigramme (arbre). */
 export function Organisation() {
   const { organisation: o } = home;
   return (

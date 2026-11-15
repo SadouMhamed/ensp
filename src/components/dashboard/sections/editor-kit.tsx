@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  createContext,
-  use,
-  useId,
-  useState,
-  useTransition,
-  type ReactNode,
-} from "react";
+import { useId, useState, useTransition, type ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -19,7 +12,6 @@ import {
   Trash2Icon,
 } from "lucide-react";
 import { toast } from "sonner";
-import type { MediaItem } from "@/server/queries/media";
 import { resetSection, saveSection } from "@/server/actions/sections";
 import {
   SECTIONS,
@@ -45,6 +37,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { MediaPickerDialog } from "@/components/dashboard/media/media-picker-dialog";
+import { useMediaLibrary } from "@/components/dashboard/media/media-library-context";
 
 /**
  * Shared building blocks for the website section editors:
@@ -52,30 +45,7 @@ import { MediaPickerDialog } from "@/components/dashboard/media/media-picker-dia
  */
 
 // ── Media library (for the photo fields) ─────────────────────────
-
-type MediaLibrary = {
-  items: MediaItem[];
-  setItems: (items: MediaItem[]) => void;
-  canUpload: boolean;
-};
-const MediaLibraryContext = createContext<MediaLibrary | null>(null);
-
-export function MediaLibraryProvider({
-  initial,
-  canUpload,
-  children,
-}: {
-  initial: MediaItem[];
-  canUpload: boolean;
-  children: ReactNode;
-}) {
-  const [items, setItems] = useState(initial);
-  return (
-    <MediaLibraryContext value={{ items, setItems, canUpload }}>
-      {children}
-    </MediaLibraryContext>
-  );
-}
+export { MediaLibraryProvider } from "@/components/dashboard/media/media-library-context";
 
 // ── Editor state + save bar ──────────────────────────────────────
 
@@ -405,10 +375,9 @@ export function ImageField({
   aspect?: string;
   emptyHint?: string;
 }) {
-  const library = use(MediaLibraryContext);
+  const library = useMediaLibrary();
   const [open, setOpen] = useState(false);
   const altId = useId();
-  if (!library) throw new Error("ImageField needs a MediaLibraryProvider");
 
   return (
     <div className="flex flex-col gap-3">

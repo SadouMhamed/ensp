@@ -146,8 +146,10 @@ function MediaCard({ item }: { item: MediaItem }) {
             <AlertDialogTitle>Delete this photo?</AlertDialogTitle>
             <AlertDialogDescription>
               {item.filename} will be removed from the media library. If a
-              website section still uses it, you&apos;ll be asked to replace it
-              there first. This can&apos;t be undone.
+              website section or an article&apos;s text still uses it,
+              you&apos;ll be asked to remove it there first. If it is an article
+              cover, the article simply loses its cover. This can&apos;t be
+              undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

@@ -22,9 +22,14 @@ export function DashboardHeader() {
     <header className="flex h-(--header-height) shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height)">
       <div className="flex w-full items-center gap-1 px-4 lg:gap-2 lg:px-6">
         <SidebarTrigger className="-ml-1" />
-        <Separator orientation="vertical" className="mx-2 h-4 data-vertical:self-auto" />
+        <Separator
+          orientation="vertical"
+          className="mx-2 h-4 data-vertical:self-auto"
+        />
         {/* Reading the URL is request data on dynamic pages (e.g. /posts/[id]): keep it in Suspense. */}
-        <Suspense fallback={<h1 className="text-base font-medium">Dashboard</h1>}>
+        <Suspense
+          fallback={<h1 className="text-base font-medium">Dashboard</h1>}
+        >
           <PageTitle />
         </Suspense>
         <div className="ml-auto flex items-center gap-2">
@@ -37,6 +42,7 @@ export function DashboardHeader() {
 
 function PageTitle() {
   const pathname = usePathname();
-  const title = titles.find(([prefix]) => pathname.startsWith(prefix))?.[1] ?? "Dashboard";
+  const title =
+    titles.find(([prefix]) => pathname.startsWith(prefix))?.[1] ?? "Dashboard";
   return <h1 className="text-base font-medium">{title}</h1>;
 }

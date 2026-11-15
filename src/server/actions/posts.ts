@@ -3,7 +3,7 @@
 import { and, eq, ne } from "drizzle-orm";
 import { updateTag } from "next/cache";
 import { db } from "@/db";
-import { posts } from "@/db/schema";
+import { media, posts } from "@/db/schema";
 import { requirePermission } from "@/lib/dal";
 import { postSchema, type PostInput } from "@/lib/validations/post";
 
@@ -36,8 +36,22 @@ export async function savePost(
       error: `Another article already uses the address "/blog/${data.slug}".`,
     };
 
+  // Cover photo: must exist in the media library.
+  if (data.coverMediaId) {
+    const cover = await db.query.media.findFirst({
+      where: eq(media.id, data.coverMediaId),
+      columns: { id: true },
+    });
+    if (!cover)
+      return {
+        ok: false,
+        error: "The cover photo no longer exists in the media library.",
+      };
+  }
+
   const values = {
     title: data.title,
+    coverMediaId: data.coverMediaId ?? null,
     slug: data.slug,
     excerpt: data.excerpt || null,
     content: data.content ?? null,

@@ -3,7 +3,11 @@
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { updateUserAccessAction } from "@/server/actions/users";
-import { cleanPermissions, type Permission, type Role } from "@/lib/permissions";
+import {
+  cleanPermissions,
+  type Permission,
+  type Role,
+} from "@/lib/permissions";
 import type { AdminUserRow } from "@/server/queries/users";
 import { Button } from "@/components/ui/button";
 import {
@@ -38,11 +42,17 @@ export function EditAccessDialog({
   function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (role === "editor" && permissions.length === 0) {
-      return setError("Give the editor at least one privilege, or make them an admin.");
+      return setError(
+        "Give the editor at least one privilege, or make them an admin.",
+      );
     }
     setError(null);
     startTransition(async () => {
-      const result = await updateUserAccessAction({ userId: user.id, role, permissions });
+      const result = await updateUserAccessAction({
+        userId: user.id,
+        role,
+        permissions,
+      });
       if (!result.ok) return setError(result.error);
       toast.success(`Access updated for ${user.name}`);
       onOpenChange(false);
@@ -71,7 +81,11 @@ export function EditAccessDialog({
             {error ? <FieldError>{error}</FieldError> : null}
           </FieldGroup>
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+            >
               Cancel
             </Button>
             <Button type="submit" disabled={pending}>

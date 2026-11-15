@@ -40,7 +40,11 @@ export function AccessFields({
   const isAdmin = role === "admin";
 
   function toggle(p: Permission, checked: boolean) {
-    onPermissionsChange(checked ? [...new Set([...permissions, p])] : permissions.filter((x) => x !== p));
+    onPermissionsChange(
+      checked
+        ? [...new Set([...permissions, p])]
+        : permissions.filter((x) => x !== p),
+    );
   }
 
   return (
@@ -58,7 +62,9 @@ export function AccessFields({
               <Field orientation="horizontal">
                 <FieldContent>
                   <FieldTitle>{ROLE_INFO[r].label}</FieldTitle>
-                  <FieldDescription>{ROLE_INFO[r].description}</FieldDescription>
+                  <FieldDescription>
+                    {ROLE_INFO[r].description}
+                  </FieldDescription>
                 </FieldContent>
                 <RadioGroupItem value={r} id={`${idPrefix}-role-${r}`} />
               </Field>
@@ -66,18 +72,26 @@ export function AccessFields({
           ))}
         </RadioGroup>
         {roleLocked ? (
-          <FieldDescription>You can&apos;t change your own role.</FieldDescription>
+          <FieldDescription>
+            You can&apos;t change your own role.
+          </FieldDescription>
         ) : null}
       </FieldSet>
 
       <FieldSet>
         <FieldLegend variant="label">Privileges</FieldLegend>
         <FieldDescription>
-          {isAdmin ? "Admins can manage everything." : "Choose what this person can manage."}
+          {isAdmin
+            ? "Admins can manage everything."
+            : "Choose what this person can manage."}
         </FieldDescription>
         <div className="grid gap-3">
           {PERMISSIONS.map((p) => (
-            <Field key={p} orientation="horizontal" data-disabled={isAdmin || undefined}>
+            <Field
+              key={p}
+              orientation="horizontal"
+              data-disabled={isAdmin || undefined}
+            >
               <Checkbox
                 id={`${idPrefix}-perm-${p}`}
                 checked={isAdmin || permissions.includes(p)}
@@ -85,8 +99,12 @@ export function AccessFields({
                 onCheckedChange={(checked) => toggle(p, checked === true)}
               />
               <FieldContent>
-                <FieldLabel htmlFor={`${idPrefix}-perm-${p}`}>{PERMISSION_INFO[p].label}</FieldLabel>
-                <FieldDescription>{PERMISSION_INFO[p].description}</FieldDescription>
+                <FieldLabel htmlFor={`${idPrefix}-perm-${p}`}>
+                  {PERMISSION_INFO[p].label}
+                </FieldLabel>
+                <FieldDescription>
+                  {PERMISSION_INFO[p].description}
+                </FieldDescription>
               </FieldContent>
             </Field>
           ))}

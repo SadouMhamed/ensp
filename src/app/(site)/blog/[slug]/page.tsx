@@ -10,6 +10,7 @@ import { dateLong as dateFormat } from "@/content/site";
 import { getPostBySlug } from "@/server/queries/posts";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Container, Eyebrow } from "@/components/site/section";
+import { Media } from "@/components/site/media";
 
 export async function generateMetadata({
   params,
@@ -17,7 +18,12 @@ export async function generateMetadata({
   const { slug } = await params;
   const post = await getPostBySlug(slug);
   if (!post) return { title: "Article introuvable" };
-  return { title: post.title, description: post.excerpt ?? undefined };
+  return {
+    title: post.title,
+    description: post.excerpt ?? undefined,
+    // Cover photo used when the article is shared (Facebook, LinkedIn, WhatsApp…)
+    openGraph: post.cover ? { images: [{ url: post.cover.url }] } : undefined,
+  };
 }
 
 export default function PostPage({ params }: PageProps<"/blog/[slug]">) {
@@ -65,6 +71,17 @@ async function Article({
           </p>
         </Container>
       </header>
+      {post.cover ? (
+        <Container className="-mt-8 max-w-4xl md:-mt-12">
+          <Media
+            src={post.cover.url}
+            alt={post.cover.altText ?? ""}
+            priority
+            sizes="(min-width: 1024px) 56rem, 100vw"
+            className="aspect-video w-full rounded-2xl shadow-lg"
+          />
+        </Container>
+      ) : null}
       <Container className="max-w-3xl py-12 md:py-16">
         {/* Tiptap JSON → HTML on the server, with the same extensions as the editor */}
         <div className="prose prose-neutral max-w-none prose-headings:font-light prose-a:text-primary prose-img:w-full">

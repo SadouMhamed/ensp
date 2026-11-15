@@ -31,6 +31,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { RichTextEditor } from "../editor/rich-text-editor";
+import { CoverField, type CoverValue } from "./cover-field";
 
 export type PostFormValues = {
   id?: string;
@@ -39,6 +40,8 @@ export type PostFormValues = {
   excerpt: string;
   content: JSONContent | null;
   status: "draft" | "published";
+  /** Cover photo from the media library (shown on the news list and above the article). */
+  cover: CoverValue | null;
 };
 
 const empty: PostFormValues = {
@@ -47,6 +50,7 @@ const empty: PostFormValues = {
   excerpt: "",
   content: null,
   status: "draft",
+  cover: null,
 };
 
 /** Create / edit an article. Content is written with the Tiptap editor. */
@@ -77,6 +81,7 @@ export function PostForm({ initial = empty }: { initial?: PostFormValues }) {
     const parsed = postSchema.safeParse({
       ...values,
       excerpt: values.excerpt || undefined,
+      coverMediaId: values.cover?.id ?? null,
     });
     if (!parsed.success) return setError(parsed.error.issues[0].message);
     setError(null);
@@ -140,8 +145,12 @@ export function PostForm({ initial = empty }: { initial?: PostFormValues }) {
         </Field>
       </FieldGroup>
 
-      {/* Side column: publish settings */}
+      {/* Side column: publish settings + cover photo */}
       <div className="flex flex-col gap-6 lg:sticky lg:top-20 lg:self-start">
+        <CoverField
+          value={values.cover}
+          onChange={(cover) => set("cover", cover)}
+        />
         <FieldGroup className="rounded-lg border p-4">
           <Field>
             <FieldLabel>Status</FieldLabel>

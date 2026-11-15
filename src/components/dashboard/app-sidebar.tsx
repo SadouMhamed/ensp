@@ -18,7 +18,12 @@ import {
 
 const navSecondary = [
   { title: "Settings", url: "/dashboard/settings", icon: <Settings2Icon /> },
-  { title: "View website", url: "/", icon: <ExternalLinkIcon />, external: true },
+  {
+    title: "View website",
+    url: "/",
+    icon: <ExternalLinkIcon />,
+    external: true,
+  },
 ];
 
 export function AppSidebar({

@@ -32,8 +32,8 @@ export async function updateMediaAlt(
 
 /**
  * Delete a photo (database row + file in the bucket).
- * Refused while a website section uses it, so the site never shows a broken image:
- * replace it in that section first. Article covers are simply removed.
+ * Refused while a website section or an article's text uses it, so the site never shows a
+ * broken image: remove it there first. Article covers are simply removed.
  */
 export async function deleteMedia(id: string): Promise<Result> {
   await requirePermission("media");
@@ -41,10 +41,11 @@ export async function deleteMedia(id: string): Promise<Result> {
     return { ok: false, error: "Invalid photo." };
 
   const usage = await getMediaUsage(id);
-  if (usage.sections.length > 0) {
+  const blocking = [...usage.sections, ...usage.articleTexts];
+  if (blocking.length > 0) {
     return {
       ok: false,
-      error: `This photo is used in: ${usage.sections.join(", ")}. Replace it there first, then delete it.`,
+      error: `This photo is used in: ${blocking.join(", ")}. Remove it there first, then delete it.`,
     };
   }
 
@@ -58,7 +59,7 @@ export async function deleteMedia(id: string): Promise<Result> {
     console.error("Could not delete file from object storage", error);
   }
 
-  if (usage.posts.length > 0) updateTag("posts");
+  if (usage.covers.length > 0) updateTag("posts");
   refresh();
   return { ok: true };
 }

@@ -3,6 +3,9 @@ import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import type { JSONContent } from "@tiptap/react";
 import { requirePermission } from "@/lib/dal";
+import { can } from "@/lib/permissions";
+import { getAllMedia } from "@/server/queries/media";
+import { MediaLibraryProvider } from "@/components/dashboard/media/media-library-context";
 import { getPostForEdit } from "@/server/queries/posts";
 import { PostForm } from "@/components/dashboard/posts/post-form";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -26,22 +29,25 @@ async function EditPost({
 }: {
   params: PageProps<"/dashboard/posts/[id]">["params"];
 }) {
-  await requirePermission("posts"); // server-side access check
+  const user = await requirePermission("posts"); // server-side access check
   const { id } = await params;
-  const post = await getPostForEdit(id);
+  const [post, media] = await Promise.all([getPostForEdit(id), getAllMedia()]);
   if (!post) notFound();
 
   return (
-    <PostForm
-      key={post.id}
-      initial={{
-        id: post.id,
-        title: post.title,
-        slug: post.slug,
-        excerpt: post.excerpt ?? "",
-        content: (post.content as JSONContent | null) ?? null,
-        status: post.status,
-      }}
-    />
+    <MediaLibraryProvider initial={media} canUpload={can(user, "media")}>
+      <PostForm
+        key={post.id}
+        initial={{
+          id: post.id,
+          title: post.title,
+          slug: post.slug,
+          excerpt: post.excerpt ?? "",
+          content: (post.content as JSONContent | null) ?? null,
+          status: post.status,
+          cover: post.cover,
+        }}
+      />
+    </MediaLibraryProvider>
   );
 }

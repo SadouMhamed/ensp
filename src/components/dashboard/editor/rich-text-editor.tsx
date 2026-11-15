@@ -33,7 +33,11 @@ export function RichTextEditor({
     ],
     content: value ?? "",
     immediatelyRender: false, // required with server rendering (Next.js)
-    onUpdate: ({ editor }) => onChange(editor.getJSON()),
+    // getJSON() reuses ProseMirror's attribute objects (not plain objects). React can't send
+    // those to a Server Action (they arrive empty: images lost their address), so we pass
+    // a plain copy.
+    onUpdate: ({ editor }) =>
+      onChange(JSON.parse(JSON.stringify(editor.getJSON())) as JSONContent),
     editorProps: {
       attributes: {
         class:

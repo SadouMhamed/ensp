@@ -19,7 +19,12 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
-export type NavAccess = { posts: boolean; media: boolean; sections: boolean; users: boolean };
+export type NavAccess = {
+  posts: boolean;
+  media: boolean;
+  sections: boolean;
+  users: boolean;
+};
 
 const NAV_ITEMS: {
   title: string;
@@ -28,16 +33,38 @@ const NAV_ITEMS: {
   requires?: keyof NavAccess;
 }[] = [
   { title: "Overview", url: "/dashboard", icon: <LayoutDashboardIcon /> },
-  { title: "Articles", url: "/dashboard/posts", icon: <FileTextIcon />, requires: "posts" },
-  { title: "Media library", url: "/dashboard/media", icon: <ImageIcon />, requires: "media" },
-  { title: "Website sections", url: "/dashboard/sections", icon: <PanelsTopLeftIcon />, requires: "sections" },
-  { title: "Users", url: "/dashboard/users", icon: <UsersIcon />, requires: "users" },
+  {
+    title: "Articles",
+    url: "/dashboard/posts",
+    icon: <FileTextIcon />,
+    requires: "posts",
+  },
+  {
+    title: "Media library",
+    url: "/dashboard/media",
+    icon: <ImageIcon />,
+    requires: "media",
+  },
+  {
+    title: "Website sections",
+    url: "/dashboard/sections",
+    icon: <PanelsTopLeftIcon />,
+    requires: "sections",
+  },
+  {
+    title: "Users",
+    url: "/dashboard/users",
+    icon: <UsersIcon />,
+    requires: "users",
+  },
 ];
 
 /** Shows only what the signed-in user may open (pages still check access on the server). */
 export function NavMain({ access }: { access: NavAccess }) {
   const pathname = usePathname();
-  const items = NAV_ITEMS.filter((item) => !item.requires || access[item.requires]);
+  const items = NAV_ITEMS.filter(
+    (item) => !item.requires || access[item.requires],
+  );
 
   return (
     <SidebarGroup>
@@ -59,7 +86,9 @@ export function NavMain({ access }: { access: NavAccess }) {
         <SidebarMenu>
           {items.map((item) => {
             const active =
-              item.url === "/dashboard" ? pathname === item.url : pathname.startsWith(item.url);
+              item.url === "/dashboard"
+                ? pathname === item.url
+                : pathname.startsWith(item.url);
             return (
               <SidebarMenuItem key={item.title}>
                 <SidebarMenuButton

@@ -29,6 +29,8 @@ import {
 } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
 import { Toggle } from "@/components/ui/toggle";
+import { MediaPickerDialog } from "@/components/dashboard/media/media-picker-dialog";
+import { useMediaLibrary } from "@/components/dashboard/media/media-library-context";
 import {
   Tooltip,
   TooltipContent,
@@ -296,64 +298,35 @@ function LinkButton({ editor, active }: { editor: Editor; active: boolean }) {
   );
 }
 
+/** Insert a photo from the media library (or upload one) at the cursor. */
 function ImageButton({ editor }: { editor: Editor }) {
   const [open, setOpen] = useState(false);
-  const [src, setSrc] = useState("");
-  const [alt, setAlt] = useState("");
-
-  function insert(e: React.FormEvent) {
-    e.preventDefault();
-    if (!/^https?:\/\//.test(src.trim())) return;
-    editor.chain().focus().setImage({ src: src.trim(), alt: alt.trim() }).run();
-    setSrc("");
-    setAlt("");
-    setOpen(false);
-  }
+  const library = useMediaLibrary();
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger
-        render={<Toggle size="sm" aria-label="Image" pressed={false} />}
+    <>
+      <Toggle
+        size="sm"
+        aria-label="Insert a photo"
+        pressed={false}
+        onClick={() => setOpen(true)}
       >
         <ImageIcon />
-      </PopoverTrigger>
-      <PopoverContent className="w-80">
-        <form onSubmit={insert}>
-          <FieldGroup>
-            <Field>
-              <FieldLabel htmlFor="editor-image">
-                Image address (URL)
-              </FieldLabel>
-              <Input
-                id="editor-image"
-                value={src}
-                onChange={(e) => setSrc(e.target.value)}
-                placeholder="https://…/photo.jpg"
-                autoFocus
-              />
-            </Field>
-            <Field>
-              <FieldLabel htmlFor="editor-image-alt">
-                Description (for accessibility)
-              </FieldLabel>
-              <Input
-                id="editor-image-alt"
-                value={alt}
-                onChange={(e) => setAlt(e.target.value)}
-              />
-            </Field>
-            <div className="flex justify-end">
-              <Button
-                type="submit"
-                size="sm"
-                disabled={!/^https?:\/\//.test(src.trim())}
-              >
-                Insert image
-              </Button>
-            </div>
-          </FieldGroup>
-        </form>
-      </PopoverContent>
-    </Popover>
+      </Toggle>
+      <MediaPickerDialog
+        open={open}
+        onOpenChange={setOpen}
+        items={library.items}
+        onItemsChange={library.setItems}
+        canUpload={library.canUpload}
+        onSelect={(item) =>
+          editor
+            .chain()
+            .focus()
+            .setImage({ src: item.url, alt: item.altText ?? "" })
+            .run()
+        }
+      />
+    </>
   );
 }

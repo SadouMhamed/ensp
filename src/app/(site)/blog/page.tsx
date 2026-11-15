@@ -20,7 +20,7 @@ export default async function BlogPage() {
         {posts.length === 0 ? (
           <NoNews />
         ) : (
-          <div className="grid gap-x-8 gap-y-14 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {posts.map((post) => (
               <NewsCard key={post.id} post={post} />
             ))}

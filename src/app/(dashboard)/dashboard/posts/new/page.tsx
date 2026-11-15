@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { requirePermission } from "@/lib/dal";
+import { can } from "@/lib/permissions";
+import { getAllMedia } from "@/server/queries/media";
+import { MediaLibraryProvider } from "@/components/dashboard/media/media-library-context";
 import { PostForm } from "@/components/dashboard/posts/post-form";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -17,6 +20,11 @@ export default function NewPostPage() {
 }
 
 async function Guarded() {
-  await requirePermission("posts"); // server-side access check
-  return <PostForm />;
+  const user = await requirePermission("posts"); // server-side access check
+  const media = await getAllMedia();
+  return (
+    <MediaLibraryProvider initial={media} canUpload={can(user, "media")}>
+      <PostForm />
+    </MediaLibraryProvider>
+  );
 }

@@ -11,9 +11,18 @@ export async function getAllMedia() {
 
 export type MediaItem = Awaited<ReturnType<typeof getAllMedia>>[number];
 
-/** Where a photo is used: website sections and article covers (human-readable labels). */
+/**
+ * Where a photo is used, as readable labels:
+ * - sections: website sections (deleting is refused)
+ * - articleTexts: inside the text of an article (deleting is refused)
+ * - covers: article covers (removed automatically when the photo is deleted)
+ */
 export async function getMediaUsage(mediaId: string) {
-  const [sectionRows, postRows] = await Promise.all([
+  const item = await db.query.media.findFirst({
+    where: eq(media.id, mediaId),
+    columns: { url: true },
+  });
+  const [sectionRows, coverRows, textRows] = await Promise.all([
     db
       .select({ key: siteSections.key })
       .from(siteSections)
@@ -22,11 +31,18 @@ export async function getMediaUsage(mediaId: string) {
       .select({ title: posts.title })
       .from(posts)
       .where(eq(posts.coverMediaId, mediaId)),
+    item
+      ? db
+          .select({ title: posts.title })
+          .from(posts)
+          .where(sql`${posts.content}::text like ${`%${item.url}%`}`)
+      : Promise.resolve([]),
   ]);
   return {
     sections: sectionRows.map((r) =>
       isSectionKey(r.key) ? SECTIONS[r.key].title : r.key,
     ),
-    posts: postRows.map((p) => p.title),
+    articleTexts: textRows.map((p) => `article "${p.title}"`),
+    covers: coverRows.map((p) => p.title),
   };
 }

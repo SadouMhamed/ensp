@@ -59,7 +59,9 @@ export async function getPostForEdit(id: string) {
       content: true,
       status: true,
       publishedAt: true,
+      coverMediaId: true,
     },
+    with: { cover: { columns: { id: true, url: true, altText: true } } },
   });
 }
 
