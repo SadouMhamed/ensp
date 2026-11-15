@@ -19,6 +19,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { LocationMap } from "@/components/ui/location-map";
 import { PageHero } from "@/components/site/page-hero";
 import { Container, SectionHeader } from "@/components/site/section";
 
@@ -103,15 +104,22 @@ export default function ContactPage() {
                   </div>
                 ))}
               </dl>
-              <a
-                href={c.mapUrl}
-                target="_blank"
-                rel="noreferrer"
-                className={buttonVariants({ className: "w-fit" })}
-              >
-                Voir sur la carte
-                <ExternalLinkIcon data-icon="inline-end" aria-hidden />
-              </a>
+              <div className="flex flex-col items-start gap-8 border-t pt-6">
+                <LocationMap
+                  location="Hassi Messaoud, Algérie"
+                  coordinates="31.7043° N, 6.0557° E"
+                  badge="Siège"
+                />
+                <a
+                  href={c.mapUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={buttonVariants({ className: "w-fit shrink-0" })}
+                >
+                  Itinéraire sur Google Maps
+                  <ExternalLinkIcon data-icon="inline-end" aria-hidden />
+                </a>
+              </div>
             </CardContent>
           </Card>
 

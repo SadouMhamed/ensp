@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowRightIcon, ChevronsDownIcon } from "lucide-react";
 import { home } from "@/content/site";
 import { cn } from "@/lib/utils";
+import { getHeroSection } from "@/server/queries/sections";
 import { buttonVariants } from "@/components/ui/button";
 import { Media } from "@/components/site/media";
 import { Container } from "../section";
@@ -10,16 +11,21 @@ import { Container } from "../section";
  * Hero : photos plein écran empilées au défilement (inspiré du bloc "smooth-scroll").
  * Chaque diapositive reste collée sous l'en-tête (`sticky`) et la suivante glisse par-dessus.
  * L'en-tête du site reste toujours visible. Défilement doux : voir SmoothScroll (Lenis).
+ * Contenu (diapositives, photos, textes) : modifiable dans le tableau de bord
+ * (Website sections → Home: hero slides). Boutons et nom de l'entreprise : site.ts.
  */
-export function Hero() {
+export async function Hero() {
   const { hero } = home;
-  const total = String(hero.slides.length).padStart(2, "0");
+  const { visible, content } = await getHeroSection();
+  if (!visible) return null;
+  const slides = content.slides;
+  const total = String(slides.length).padStart(2, "0");
 
   return (
     <section aria-label="Présentation de l'ENSP" className="relative">
-      {hero.slides.map((slide, i) => (
+      {slides.map((slide, i) => (
         <div
-          key={slide.title}
+          key={slide.id}
           className={cn(
             "sticky top-(--site-header-h) h-[calc(100svh-var(--site-header-h))] overflow-hidden bg-foreground",
             i > 0 &&
@@ -27,8 +33,8 @@ export function Hero() {
           )}
         >
           <Media
-            src={slide.image}
-            alt={slide.alt}
+            src={slide.image?.url}
+            alt={slide.image?.alt}
             label={slide.image ? undefined : `hero ${i + 1}`}
             priority={i === 0}
             className="absolute inset-0 size-full"
@@ -52,9 +58,11 @@ export function Hero() {
             <h2 className="max-w-4xl text-4xl leading-[1.05] font-semibold tracking-tight text-balance md:text-6xl">
               {slide.title}
             </h2>
-            <p className="max-w-2xl text-base leading-relaxed text-white/85 md:text-lg">
-              {slide.text}
-            </p>
+            {slide.text ? (
+              <p className="max-w-2xl text-base leading-relaxed text-white/85 md:text-lg">
+                {slide.text}
+              </p>
+            ) : null}
 
             {i === 0 ? (
               <div className="flex flex-wrap gap-3 pt-2">

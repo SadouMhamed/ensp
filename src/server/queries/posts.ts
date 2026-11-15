@@ -25,7 +25,13 @@ export async function getLatestPosts(limit = 3) {
     where: eq(posts.status, "published"),
     orderBy: desc(posts.publishedAt),
     limit,
-    columns: { id: true, title: true, slug: true, excerpt: true, publishedAt: true },
+    columns: {
+      id: true,
+      title: true,
+      slug: true,
+      excerpt: true,
+      publishedAt: true,
+    },
     with: { cover: { columns: { url: true, altText: true } } },
   });
 }
@@ -45,7 +51,15 @@ export async function getPostForEdit(id: string) {
   if (!/^[0-9a-f-]{36}$/i.test(id)) return undefined; // not a UUID → not found
   return db.query.posts.findFirst({
     where: eq(posts.id, id),
-    columns: { id: true, title: true, slug: true, excerpt: true, content: true, status: true, publishedAt: true },
+    columns: {
+      id: true,
+      title: true,
+      slug: true,
+      excerpt: true,
+      content: true,
+      status: true,
+      publishedAt: true,
+    },
   });
 }
 

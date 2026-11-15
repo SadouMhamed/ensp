@@ -28,10 +28,13 @@ function errorMessage(err: unknown): string {
  * Every action re-checks that the caller is an admin (requireAdmin) — the UI hiding
  * buttons is not security. Better Auth's admin API checks the admin session again.
  */
-export async function createUserAction(input: CreateUserInput): Promise<ActionResult> {
+export async function createUserAction(
+  input: CreateUserInput,
+): Promise<ActionResult> {
   await requireAdmin();
   const parsed = createUserSchema.safeParse(input);
-  if (!parsed.success) return { ok: false, error: parsed.error.issues[0].message };
+  if (!parsed.success)
+    return { ok: false, error: parsed.error.issues[0].message };
   const { name, email, password, role, permissions } = parsed.data;
 
   try {
@@ -51,10 +54,13 @@ export async function createUserAction(input: CreateUserInput): Promise<ActionRe
   return { ok: true };
 }
 
-export async function updateUserAccessAction(input: UpdateAccessInput): Promise<ActionResult> {
+export async function updateUserAccessAction(
+  input: UpdateAccessInput,
+): Promise<ActionResult> {
   const me = await requireAdmin();
   const parsed = updateAccessSchema.safeParse(input);
-  if (!parsed.success) return { ok: false, error: parsed.error.issues[0].message };
+  if (!parsed.success)
+    return { ok: false, error: parsed.error.issues[0].message };
   const { userId, role, permissions } = parsed.data;
 
   // Keeps at least one admin: you can't lock yourself out.
@@ -63,7 +69,10 @@ export async function updateUserAccessAction(input: UpdateAccessInput): Promise<
   }
 
   try {
-    await auth.api.setRole({ body: { userId, role }, headers: await headers() });
+    await auth.api.setRole({
+      body: { userId, role },
+      headers: await headers(),
+    });
     await db
       .update(user)
       .set({ permissions: cleanPermissions(role, permissions) })
@@ -78,7 +87,8 @@ export async function updateUserAccessAction(input: UpdateAccessInput): Promise<
 
 export async function deleteUserAction(userId: string): Promise<ActionResult> {
   const me = await requireAdmin();
-  if (userId === me.id) return { ok: false, error: "You can't delete your own account." };
+  if (userId === me.id)
+    return { ok: false, error: "You can't delete your own account." };
 
   try {
     // Deletes the user, their sessions and login. Their articles/media stay (author set to empty).

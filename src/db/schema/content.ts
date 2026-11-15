@@ -5,6 +5,7 @@ import {
   text,
   integer,
   jsonb,
+  boolean,
   timestamp,
   uuid,
   index,
@@ -29,7 +30,9 @@ export const media = pgTable(
     width: integer("width"),
     height: integer("height"),
     altText: text("alt_text"),
-    uploadedBy: text("uploaded_by").references(() => user.id, { onDelete: "set null" }),
+    uploadedBy: text("uploaded_by").references(() => user.id, {
+      onDelete: "set null",
+    }),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (t) => [index("media_created_at_idx").on(t.createdAt)],
@@ -44,9 +47,13 @@ export const posts = pgTable(
     slug: text("slug").notNull().unique(),
     excerpt: text("excerpt"),
     content: jsonb("content"),
-    coverMediaId: uuid("cover_media_id").references(() => media.id, { onDelete: "set null" }),
+    coverMediaId: uuid("cover_media_id").references(() => media.id, {
+      onDelete: "set null",
+    }),
     status: postStatus("status").default("draft").notNull(),
-    authorId: text("author_id").references(() => user.id, { onDelete: "set null" }),
+    authorId: text("author_id").references(() => user.id, {
+      onDelete: "set null",
+    }),
     publishedAt: timestamp("published_at"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
@@ -66,7 +73,13 @@ export const siteSections = pgTable("site_sections", {
   key: text("key").notNull().unique(), // e.g. "home_hero", "about_banner"
   title: text("title"),
   body: text("body"),
-  mediaId: uuid("media_id").references(() => media.id, { onDelete: "set null" }),
+  mediaId: uuid("media_id").references(() => media.id, {
+    onDelete: "set null",
+  }),
+  /** Structured content of the section (slides, paragraphs, photos…), checked with zod. */
+  data: jsonb("data"),
+  /** Hidden sections are not shown on the website (nothing is deleted). */
+  visible: boolean("visible").default(true).notNull(),
   updatedAt: timestamp("updated_at")
     .defaultNow()
     .$onUpdate(() => new Date())
