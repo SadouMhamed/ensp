@@ -6,14 +6,17 @@ export function PageHero({
   eyebrow,
   title,
   description,
+  image = "/images/site/page-hero-atelier.jpg",
 }: {
   eyebrow?: string;
   title: string;
   description?: string;
+  /** Background photo (darkened). */
+  image?: string;
 }) {
   return (
     <section className="relative isolate overflow-hidden">
-      <Media alt="" className="absolute inset-0 -z-10" />
+      <Media src={image} alt="" priority className="absolute inset-0 -z-10" />
       <div aria-hidden className="absolute inset-0 -z-10 bg-foreground/80" />
       <Container className="flex flex-col gap-5 py-20 text-background md:py-28">
         {eyebrow ? <Eyebrow>{eyebrow}</Eyebrow> : null}

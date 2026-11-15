@@ -39,7 +39,9 @@ export default function CareersPage() {
             </a>
           </div>
           <Media
-            label="Équipe sur le terrain"
+            src="/images/site/carrieres-operateur.jpg"
+            alt="Opérateur de l'ENSP sur un site d'intervention"
+            sizes="(min-width: 1024px) 50vw, 100vw"
             className="aspect-[4/3] w-full"
           />
         </Container>

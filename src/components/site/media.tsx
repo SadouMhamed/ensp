@@ -11,6 +11,7 @@ export function Media({
   label,
   tone = "dark",
   priority,
+  sizes = "100vw",
   className,
 }: {
   src?: string | null;
@@ -19,6 +20,8 @@ export function Media({
   label?: string;
   tone?: "dark" | "light";
   priority?: boolean;
+  /** Rendered width hint for next/image (default: full screen width). */
+  sizes?: string;
   className?: string;
 }) {
   if (src) {
@@ -29,7 +32,7 @@ export function Media({
           alt={alt}
           fill
           priority={priority}
-          sizes="100vw"
+          sizes={sizes}
           className="object-cover"
         />
       </div>

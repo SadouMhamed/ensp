@@ -1,77 +1,94 @@
 import Link from "next/link";
-import { ArrowRightIcon } from "lucide-react";
+import { ArrowRightIcon, ChevronsDownIcon } from "lucide-react";
 import { home } from "@/content/site";
 import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Media } from "@/components/site/media";
 import { Container } from "../section";
 
-/** Hero (shadcn style): badge, bold headline, description, buttons, key-figure cards. */
+/**
+ * Hero : photos plein écran empilées au défilement (inspiré du bloc "smooth-scroll").
+ * Chaque diapositive reste collée sous l'en-tête (`sticky`) et la suivante glisse par-dessus.
+ * L'en-tête du site reste toujours visible. Défilement doux : voir SmoothScroll (Lenis).
+ */
 export function Hero() {
-  const { hero, presentation } = home;
-  return (
-    <section className="relative isolate overflow-hidden border-b">
-      {/* soft brand glow + dotted grid */}
-      <div
-        aria-hidden
-        className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_60%_50%_at_50%_0%,color-mix(in_oklab,var(--primary)_22%,transparent),transparent)]"
-      />
-      <div
-        aria-hidden
-        className="absolute inset-0 -z-10 opacity-40 [background-image:radial-gradient(var(--border)_1px,transparent_1px)] [background-size:22px_22px] [mask-image:linear-gradient(to_bottom,black,transparent)]"
-      />
-      <Container className="flex flex-col items-center gap-8 py-20 text-center md:py-28">
-        <Badge
-          variant="outline"
-          className="gap-2 bg-background px-3 py-1 text-sm"
-        >
-          <span className="size-2 rounded-full bg-primary" aria-hidden />
-          {hero.eyebrow}
-        </Badge>
-        <h1 className="max-w-4xl text-4xl font-semibold tracking-tight text-balance md:text-6xl">
-          {hero.title}
-        </h1>
-        <p className="max-w-2xl text-lg text-muted-foreground">
-          {hero.description}
-        </p>
-        <div className="flex flex-wrap justify-center gap-3">
-          <Link
-            href={hero.primaryCta.href}
-            className={cn(buttonVariants({ size: "lg" }), "h-11 px-6")}
-          >
-            {hero.primaryCta.label}
-            <ArrowRightIcon data-icon="inline-end" />
-          </Link>
-          <Link
-            href={hero.secondaryCta.href}
-            className={cn(
-              buttonVariants({ size: "lg", variant: "outline" }),
-              "h-11 px-6",
-            )}
-          >
-            {hero.secondaryCta.label}
-          </Link>
-        </div>
+  const { hero } = home;
+  const total = String(hero.slides.length).padStart(2, "0");
 
-        <div className="mt-6 grid w-full gap-4 text-left sm:grid-cols-2 lg:grid-cols-4">
-          {presentation.figures.map((f) => (
-            <Card key={f.label} className="bg-background/80 backdrop-blur">
-              <CardHeader>
-                <CardDescription>{f.label}</CardDescription>
-                <CardTitle className="text-3xl font-semibold tabular-nums text-primary">
-                  {f.value}
-                </CardTitle>
-              </CardHeader>
-            </Card>
-          ))}
+  return (
+    <section aria-label="Présentation de l'ENSP" className="relative">
+      {hero.slides.map((slide, i) => (
+        <div
+          key={slide.title}
+          className={cn(
+            "sticky top-(--site-header-h) h-[calc(100svh-var(--site-header-h))] overflow-hidden bg-foreground",
+            i > 0 &&
+              "rounded-t-2xl shadow-[0_-12px_40px_rgb(0_0_0/0.35)] md:rounded-t-3xl",
+          )}
+        >
+          <Media
+            src={slide.image}
+            alt={slide.alt}
+            label={slide.image ? undefined : `hero ${i + 1}`}
+            priority={i === 0}
+            className="absolute inset-0 size-full"
+          />
+          {/* Dark overlay so the white text stays readable on any photo */}
+          <div
+            aria-hidden
+            className="absolute inset-0 bg-linear-to-t from-black/85 via-black/45 to-black/10"
+          />
+
+          <Container className="relative flex h-full flex-col justify-end gap-5 pb-14 text-white md:pb-20">
+            {i === 0 ? (
+              <h1 className="flex items-center gap-2 text-sm font-medium tracking-wide text-white/85 uppercase">
+                <span className="size-2 rounded-full bg-primary" aria-hidden />
+                {hero.title}
+              </h1>
+            ) : null}
+            <span className="text-sm font-semibold text-primary tabular-nums">
+              {String(i + 1).padStart(2, "0")} / {total}
+            </span>
+            <h2 className="max-w-4xl text-4xl leading-[1.05] font-semibold tracking-tight text-balance md:text-6xl">
+              {slide.title}
+            </h2>
+            <p className="max-w-2xl text-base leading-relaxed text-white/85 md:text-lg">
+              {slide.text}
+            </p>
+
+            {i === 0 ? (
+              <div className="flex flex-wrap gap-3 pt-2">
+                <Link
+                  href={hero.primaryCta.href}
+                  className={cn(buttonVariants({ size: "lg" }), "h-11 px-6")}
+                >
+                  {hero.primaryCta.label}
+                  <ArrowRightIcon data-icon="inline-end" />
+                </Link>
+                <Link
+                  href={hero.secondaryCta.href}
+                  className={cn(
+                    buttonVariants({ size: "lg", variant: "outline" }),
+                    "h-11 border-white/40 bg-white/10 px-6 text-white hover:bg-white/20 hover:text-white",
+                  )}
+                >
+                  {hero.secondaryCta.label}
+                </Link>
+              </div>
+            ) : null}
+          </Container>
+
+          {i === 0 ? (
+            <div
+              aria-hidden
+              className="absolute right-6 bottom-6 hidden flex-col items-center gap-1 text-xs text-white/70 md:flex"
+            >
+              Défiler
+              <ChevronsDownIcon className="size-5 animate-bounce" />
+            </div>
+          ) : null}
         </div>
-      </Container>
+      ))}
     </section>
   );
 }

@@ -38,7 +38,12 @@ export default function ServicesPage() {
             <div className="flex flex-col gap-5">
               <DisplayHeading>{pillar.title}</DisplayHeading>
               <p className="text-muted-foreground">{pillar.lead}</p>
-              <Media label={pillar.title} className="aspect-video w-full" />
+              <Media
+                src={pillar.image}
+                alt={pillar.imageAlt}
+                sizes="(min-width: 1024px) 40vw, 100vw"
+                className="aspect-video w-full"
+              />
             </div>
             <div className="grid content-start gap-4 sm:grid-cols-2">
               {services

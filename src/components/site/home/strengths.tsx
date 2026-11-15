@@ -27,10 +27,11 @@ export function Strengths() {
       }
       title={s.title}
       periodLabel="Depuis 1981"
-      // Remplacer par une vraie photo de chantier : <Media src="/images/…" alt="…" />
       media={
         <Media
-          label="Équipes ENSP sur chantier"
+          src="/images/site/atouts-operateur.jpg"
+          alt="Opérateur de l'ENSP sur une installation"
+          sizes="(min-width: 640px) 30vw, 85vw"
           className="size-full"
         />
       }

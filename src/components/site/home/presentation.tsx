@@ -35,7 +35,9 @@ export function Presentation() {
         <div className="flex flex-col gap-4">
           <Card className="overflow-hidden p-0">
             <Media
-              label="ENSP sur le terrain"
+              src="/images/site/presentation-equipe.jpg"
+              alt="Équipe de l'ENSP sur un site d'intervention"
+              sizes="(min-width: 1024px) 40vw, 100vw"
               className="aspect-video w-full"
             />
           </Card>

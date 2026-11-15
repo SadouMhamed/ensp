@@ -125,24 +125,38 @@ export type Service = {
 export type PillarId = "drilling" | "testing" | "production" | "manufacturing";
 
 /** Les 4 familles d'activités (regroupement des activités de la fiche technique). */
-export const pillars: { id: PillarId; title: string; lead: string }[] = [
+export const pillars: {
+  id: PillarId;
+  title: string;
+  lead: string;
+  image: string;
+  imageAlt: string;
+}[] = [
   {
     id: "drilling",
+    image: "/images/site/services-forage.jpg",
+    imageAlt: "Opérateur de l'ENSP sur site",
     title: "Forage & interventions",
     lead: "Interventions sur puits, carottage, repêchage et descente de tubulaires.",
   },
   {
     id: "testing",
+    image: "/images/site/services-essais.jpg",
+    imageAlt: "Atelier de l'ENSP",
     title: "Essais & mesures",
     lead: "Essais de puits, mesures et suivi géologique pour évaluer le potentiel des puits.",
   },
   {
     id: "production",
+    image: "/images/site/services-production.jpg",
+    imageAlt: "Opérateur de l'ENSP sur une installation",
     title: "Production & environnement",
     lead: "Optimisation de la production, valorisation du gaz et traitement des installations.",
   },
   {
     id: "manufacturing",
+    image: "/images/site/services-fabrication.jpg",
+    imageAlt: "Machine-outil de l'atelier de fabrication de l'ENSP",
     title: "Fabrication & réparation",
     lead: "Conception, fabrication et réparation d'outils et de matériels pétroliers.",
   },
@@ -282,6 +296,39 @@ export const home = {
       "Plus de quatre décennies d'expertise au service des activités pétrolières et gazières, avec des solutions intégrées couvrant l'ensemble des services aux puits.",
     primaryCta: { label: "Nos services", href: "/services" },
     secondaryCta: { label: "Nous contacter", href: "/contact" },
+    // Diapositives plein écran (textes et photos fournis par l'ENSP, photos dans /public/images/site).
+    slides: [
+      {
+        title: "Plus de quatre décennies d'expertise",
+        text: "L'ENSP s'affirme comme un acteur national de référence et un leader incontesté dans le domaine des services aux puits.",
+        image: "/images/site/hero-1-equipe-forage.jpg",
+        alt: "Équipe de l'ENSP devant un appareil de forage dans le désert",
+      },
+      {
+        title: "Des prestations intégrées",
+        text: "L'ENSP propose une large gamme de métiers et de prestations intégrées, couvrant l'ensemble de la chaîne des services pétroliers, de l'ingénierie à l'exécution sur le terrain.",
+        image: "/images/site/hero-2-appareil-forage.jpg",
+        alt: "Opérateur de l'ENSP observant un appareil de forage",
+      },
+      {
+        title: "HSE & développement durable",
+        text: "L'ENSP place la santé, la sécurité et le respect de l'environnement (HSE), ainsi que le développement durable, au cœur de chacune de ses activités et de ses décisions opérationnelles.",
+        image: "/images/site/hero-3-hse.jpg",
+        alt: "Opérateur de l'ENSP équipé de ses protections individuelles",
+      },
+      {
+        title: "Innovation, efficacité & durabilité",
+        text: "Guidée par une vision stratégique fondée sur l'innovation, l'efficacité et la durabilité, l'ENSP poursuit avec détermination son ambition d'excellence et de performance au service du secteur énergétique national.",
+        image: "/images/site/hero-4-salle-controle.jpg",
+        alt: "Opérateurs de l'ENSP en salle de contrôle",
+      },
+      {
+        title: "Une expertise 100 % nationale",
+        text: "Forte de compétences entièrement nationales, l'ENSP se distingue par sa capacité à concevoir, fabriquer et réhabiliter localement des outils de forage, affirmant ainsi son rôle clé dans le développement du contenu local et dans la fourniture de solutions techniques fiables et performantes au service du secteur énergétique national.",
+        image: "/images/site/hero-5-atelier-fabrication.jpg",
+        alt: "Opérateur de l'ENSP sur un tour industriel en atelier de fabrication",
+      },
+    ],
   },
 
   // 1. Présentation
