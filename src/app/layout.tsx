@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import { allowIndexing } from "@/lib/indexing";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -18,6 +19,8 @@ export const metadata: Metadata = {
     template: "%s | ENSP",
   },
   description: "Site officiel de l'ENSP – Entreprise Nationale des Services aux Puits",
+  // Test site: a "noindex" tag on every page, on top of robots.txt.
+  robots: allowIndexing ? undefined : { index: false, follow: false },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
