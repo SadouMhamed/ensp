@@ -7,7 +7,7 @@ import { CurrentUserNav } from "@/components/dashboard/current-user-nav";
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -18,7 +18,7 @@ export default function DashboardLayout({
   children,
 }: LayoutProps<"/dashboard">) {
   return (
-    <ThemeProvider>
+    <>
       <SidebarProvider
         style={
           {
@@ -54,7 +54,8 @@ export default function DashboardLayout({
           </div>
         </SidebarInset>
       </SidebarProvider>
-    </ThemeProvider>
+      <Toaster richColors />
+    </>
   );
 }
 

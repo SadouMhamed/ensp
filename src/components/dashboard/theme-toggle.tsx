@@ -23,7 +23,10 @@ export function ThemeToggle() {
         <span className="sr-only">Toggle theme</span>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-36">
-        <DropdownMenuRadioGroup value={theme} onValueChange={(value) => setTheme(String(value))}>
+        <DropdownMenuRadioGroup
+          value={theme}
+          onValueChange={(value) => setTheme(String(value))}
+        >
           <DropdownMenuRadioItem value="light">
             <SunIcon />
             Light

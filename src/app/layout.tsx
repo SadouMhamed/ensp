@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { Geist_Mono, Inter } from "next/font/google";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import { allowIndexing } from "@/lib/indexing";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -16,13 +18,15 @@ export const metadata: Metadata = {
     default: "ENSP",
     template: "%s | ENSP",
   },
-  description: "ENSP official website",
+  description: "Site officiel de l'ENSP – Entreprise Nationale des Services aux Puits",
+  // Test site: a "noindex" tag on every page, on top of robots.txt.
+  robots: allowIndexing ? undefined : { index: false, follow: false },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
-      lang="en"
+      lang="fr"
       // next-themes sets the "dark" class on <html> before React hydrates
       suppressHydrationWarning
       className={cn(
@@ -32,7 +36,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       )}
     >
       <body className="min-h-full flex flex-col">
-        <TooltipProvider>{children}</TooltipProvider>
+        <ThemeProvider>
+          <TooltipProvider>{children}</TooltipProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -28,13 +28,22 @@ export function LoginForm({
     e.preventDefault();
     const form = new FormData(e.currentTarget);
     setPending(true);
-    const { error } = await signIn.email({
-      email: String(form.get("email")),
-      password: String(form.get("password")),
-    });
+    let error: { message?: string } | null = null;
+    try {
+      ({ error } = await signIn.email({
+        email: String(form.get("email")),
+        password: String(form.get("password")),
+      }));
+    } catch {
+      // network / server unreachable: don't leave the button stuck on "Logging in…"
+      error = {
+        message:
+          "Impossible de joindre le serveur. Vérifiez votre connexion et réessayez.",
+      };
+    }
     if (error) {
       setPending(false);
-      toast.error(error.message ?? "Invalid email or password");
+      toast.error(error.message ?? "E-mail ou mot de passe incorrect");
       return;
     }
     const next = searchParams.get("next");
@@ -50,24 +59,24 @@ export function LoginForm({
     >
       <FieldGroup>
         <div className="flex flex-col items-center gap-1 text-center">
-          <h1 className="text-2xl font-bold">Login to your account</h1>
+          <h1 className="text-2xl font-bold">Connexion à votre compte</h1>
           <p className="text-sm text-balance text-muted-foreground">
-            Enter your email below to access the dashboard
+            Saisissez votre e-mail pour accéder au tableau de bord
           </p>
         </div>
         <Field>
-          <FieldLabel htmlFor="email">Email</FieldLabel>
+          <FieldLabel htmlFor="email">E-mail</FieldLabel>
           <Input
             id="email"
             name="email"
             type="email"
             autoComplete="email"
-            placeholder="you@company.com"
+            placeholder="vous@entreprise.com"
             required
           />
         </Field>
         <Field>
-          <FieldLabel htmlFor="password">Password</FieldLabel>
+          <FieldLabel htmlFor="password">Mot de passe</FieldLabel>
           <Input
             id="password"
             name="password"
@@ -78,10 +87,10 @@ export function LoginForm({
         </Field>
         <Field>
           <Button type="submit" disabled={pending}>
-            {pending ? "Logging in…" : "Login"}
+            {pending ? "Connexion…" : "Se connecter"}
           </Button>
           <FieldDescription className="text-center">
-            Accounts are created by an administrator.
+            Les comptes sont créés par un administrateur.
           </FieldDescription>
         </Field>
       </FieldGroup>

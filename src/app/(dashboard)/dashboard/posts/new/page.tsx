@@ -1,14 +1,30 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { requirePermission } from "@/lib/dal";
+import { can } from "@/lib/permissions";
+import { getAllMedia } from "@/server/queries/media";
+import { MediaLibraryProvider } from "@/components/dashboard/media/media-library-context";
+import { PostForm } from "@/components/dashboard/posts/post-form";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export const metadata: Metadata = { title: "New article" };
 
-export default async function Page() {
-  await requirePermission("posts"); // server-side access check
+export default function NewPostPage() {
   return (
-    <div className="space-y-2 px-4 lg:px-6">
-      <h1 className="text-2xl font-semibold">New article</h1>
-      <p className="text-muted-foreground">Tiptap editor + title, slug, cover image and status.</p>
+    <div className="px-4 lg:px-6">
+      <Suspense fallback={<Skeleton className="h-96 w-full rounded-lg" />}>
+        <Guarded />
+      </Suspense>
     </div>
+  );
+}
+
+async function Guarded() {
+  const user = await requirePermission("posts"); // server-side access check
+  const media = await getAllMedia();
+  return (
+    <MediaLibraryProvider initial={media} canUpload={can(user, "media")}>
+      <PostForm />
+    </MediaLibraryProvider>
   );
 }

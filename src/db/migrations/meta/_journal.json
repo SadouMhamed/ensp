@@ -15,6 +15,13 @@
       "when": 1794528340870,
       "tag": "0001_empty_deadpool",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1794750181743,
+      "tag": "0002_amusing_infant_terrible",
+      "breakpoints": true
     }
   ]
 }

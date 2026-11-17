@@ -6,8 +6,19 @@ import { ac, adminRole, editorRole } from "@/lib/auth-roles";
 import { db } from "@/db";
 import * as schema from "@/db/schema";
 
+function isLocalBaseURL() {
+  const url = process.env.BETTER_AUTH_URL ?? "";
+  return /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?\/?$/.test(url);
+}
+
 export const auth = betterAuth({
   database: drizzleAdapter(db, { provider: "pg", schema }),
+
+  // Local machine only: accept logins from any localhost port (e.g. a second dev
+  // server on :3001). In production BETTER_AUTH_URL is the real domain, so this is off.
+  trustedOrigins: isLocalBaseURL()
+    ? ["http://localhost:*", "http://127.0.0.1:*"]
+    : [],
 
   emailAndPassword: {
     enabled: true,

@@ -1,7 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { EllipsisVerticalIcon, ShieldCheckIcon, Trash2Icon } from "lucide-react";
+import {
+  EllipsisVerticalIcon,
+  ShieldCheckIcon,
+  Trash2Icon,
+} from "lucide-react";
 import type { AdminUserRow } from "@/server/queries/users";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,7 +18,13 @@ import {
 import { DeleteUserDialog } from "./delete-user-dialog";
 import { EditAccessDialog } from "./edit-access-dialog";
 
-export function UserRowActions({ user, isSelf }: { user: AdminUserRow; isSelf: boolean }) {
+export function UserRowActions({
+  user,
+  isSelf,
+}: {
+  user: AdminUserRow;
+  isSelf: boolean;
+}) {
   const [dialog, setDialog] = useState<"edit" | "delete" | null>(null);
   const close = (open: boolean) => !open && setDialog(null);
 
@@ -22,7 +32,13 @@ export function UserRowActions({ user, isSelf }: { user: AdminUserRow; isSelf: b
     <>
       <DropdownMenu>
         <DropdownMenuTrigger
-          render={<Button variant="ghost" size="icon" className="size-8 text-muted-foreground" />}
+          render={
+            <Button
+              variant="ghost"
+              size="icon"
+              className="size-8 text-muted-foreground"
+            />
+          }
         >
           <EllipsisVerticalIcon />
           <span className="sr-only">Actions for {user.name}</span>
@@ -46,9 +62,16 @@ export function UserRowActions({ user, isSelf }: { user: AdminUserRow; isSelf: b
 
       {/* Mounted only while open, so each opening starts from the latest saved values. */}
       {dialog === "edit" ? (
-        <EditAccessDialog user={user} isSelf={isSelf} open onOpenChange={close} />
+        <EditAccessDialog
+          user={user}
+          isSelf={isSelf}
+          open
+          onOpenChange={close}
+        />
       ) : null}
-      {dialog === "delete" ? <DeleteUserDialog user={user} open onOpenChange={close} /> : null}
+      {dialog === "delete" ? (
+        <DeleteUserDialog user={user} open onOpenChange={close} />
+      ) : null}
     </>
   );
 }

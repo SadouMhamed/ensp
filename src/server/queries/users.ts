@@ -17,7 +17,10 @@ export async function getUsersForAdmin() {
     .from(user)
     .orderBy(asc(user.role), desc(user.createdAt));
 
-  return rows.map((r) => ({ ...r, role: r.role === "admin" ? ("admin" as const) : ("editor" as const) }));
+  return rows.map((r) => ({
+    ...r,
+    role: r.role === "admin" ? ("admin" as const) : ("editor" as const),
+  }));
 }
 
 export type AdminUserRow = Awaited<ReturnType<typeof getUsersForAdmin>>[number];

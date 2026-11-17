@@ -1,23 +1,50 @@
 import type { Metadata } from "next";
-import { ChartAreaInteractive } from "@/components/dashboard/chart-area-interactive";
-import { DataTable } from "@/components/dashboard/data-table";
-import { SectionCards } from "@/components/dashboard/section-cards";
-import { getDashboardStats } from "@/server/queries/dashboard";
-import sampleData from "@/components/dashboard/sample-data.json";
+import { Suspense } from "react";
+import {
+  DraftsToFinish,
+  Greeting,
+  OverviewStats,
+  QuickActions,
+  SectionsStatus,
+} from "@/components/dashboard/overview";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export const metadata: Metadata = { title: "Overview" };
 
-export default async function OverviewPage() {
-  const stats = await getDashboardStats(); // real numbers from Neon
-
+// Each block loads on its own, so the page appears right away and fills in.
+export default function OverviewPage() {
   return (
-    <>
-      <SectionCards stats={stats} />
-      {/* Sample data from the shadcn block, until analytics and the articles table are built. */}
-      <div className="px-4 lg:px-6">
-        <ChartAreaInteractive />
+    <div className="flex flex-col gap-6 px-4 lg:px-6">
+      <Suspense fallback={<Skeleton className="h-14 w-64 rounded-lg" />}>
+        <Greeting />
+      </Suspense>
+
+      <Suspense fallback={<Skeleton className="h-9 w-full max-w-xl rounded-lg" />}>
+        <QuickActions />
+      </Suspense>
+
+      <Suspense fallback={<StatsSkeleton />}>
+        <OverviewStats />
+      </Suspense>
+
+      <div className="grid gap-4 @4xl/main:grid-cols-2">
+        <Suspense fallback={<Skeleton className="h-72 rounded-xl" />}>
+          <DraftsToFinish />
+        </Suspense>
+        <Suspense fallback={<Skeleton className="h-72 rounded-xl" />}>
+          <SectionsStatus />
+        </Suspense>
       </div>
-      <DataTable data={sampleData} />
-    </>
+    </div>
+  );
+}
+
+function StatsSkeleton() {
+  return (
+    <div className="grid grid-cols-1 gap-4 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
+      {Array.from({ length: 4 }).map((_, i) => (
+        <Skeleton key={i} className="h-28 rounded-xl" />
+      ))}
+    </div>
   );
 }

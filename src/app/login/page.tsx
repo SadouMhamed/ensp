@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 import { BRAND_NAME, Logo } from "@/components/brand/logo";
 import { LoginForm } from "./login-form";
 
-export const metadata: Metadata = { title: "Login" };
+export const metadata: Metadata = { title: "Connexion" };
 
 // Layout: shadcn login-02 block (form on the left, visual panel on the right on large screens).
 export default function LoginPage() {
@@ -26,9 +27,16 @@ export default function LoginPage() {
           </div>
         </div>
       </div>
-      {/* Brand panel. Can later become a company photo: <Image fill className="object-cover" … /> */}
+      {/* Brand panel: ENSP photo with an orange overlay (large screens only) */}
       <div className="relative hidden overflow-hidden bg-muted lg:block">
-        <div className="absolute inset-0 bg-linear-to-br from-primary/90 via-primary/70 to-primary/40" />
+        <Image
+          src="/images/site/hero-2-appareil-forage.jpg"
+          alt=""
+          fill
+          sizes="50vw"
+          className="object-cover"
+        />
+        <div className="absolute inset-0 bg-linear-to-br from-primary/90 via-primary/65 to-primary/25" />
         <div
           aria-hidden
           className="absolute inset-0 opacity-20 [background-image:radial-gradient(circle_at_1px_1px,white_1px,transparent_0)] [background-size:24px_24px]"
@@ -37,8 +45,9 @@ export default function LoginPage() {
           <div className="mb-8 w-fit bg-white p-4 shadow-lg ring-1 ring-black/5">
             <Logo variant="full" size={160} priority />
           </div>
-          <p className="max-w-md text-2xl font-semibold leading-snug"></p>
-          <p className="mt-3 text-sm opacity-80">{BRAND_NAME} dashboard</p>
+          <p className="mt-3 text-sm opacity-80">
+            Tableau de bord {BRAND_NAME}
+          </p>
         </div>
       </div>
     </div>

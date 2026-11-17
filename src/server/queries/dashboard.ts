@@ -1,7 +1,7 @@
 import "server-only";
-import { count, sql } from "drizzle-orm";
+import { count, desc, eq, sql } from "drizzle-orm";
 import { db } from "@/db";
-import { media, posts } from "@/db/schema";
+import { media, posts, user } from "@/db/schema";
 
 export type DashboardStats = {
   totalPosts: number;
@@ -9,21 +9,25 @@ export type DashboardStats = {
   draftPosts: number;
   publishedThisMonth: number;
   mediaFiles: number;
+  users: number;
 };
 
 /** Dashboard overview numbers. Call only after requireUser(). */
 export async function getDashboardStats(): Promise<DashboardStats> {
-  const [postRow] = await db
-    .select({
-      total: count(),
-      published: count(sql`case when ${posts.status} = 'published' then 1 end`),
-      publishedThisMonth: count(
-        sql`case when ${posts.status} = 'published' and ${posts.publishedAt} >= date_trunc('month', now()) then 1 end`,
-      ),
-    })
-    .from(posts);
-
-  const [mediaRow] = await db.select({ total: count() }).from(media);
+  // The three counts are independent: run them at the same time.
+  const [[postRow], [mediaRow], [userRow]] = await Promise.all([
+    db
+      .select({
+        total: count(),
+        published: count(sql`case when ${posts.status} = 'published' then 1 end`),
+        publishedThisMonth: count(
+          sql`case when ${posts.status} = 'published' and ${posts.publishedAt} >= date_trunc('month', now()) then 1 end`,
+        ),
+      })
+      .from(posts),
+    db.select({ total: count() }).from(media),
+    db.select({ total: count() }).from(user),
+  ]);
 
   return {
     totalPosts: postRow.total,
@@ -31,5 +35,16 @@ export async function getDashboardStats(): Promise<DashboardStats> {
     draftPosts: postRow.total - postRow.published, // status is only draft | published
     publishedThisMonth: postRow.publishedThisMonth,
     mediaFiles: mediaRow.total,
+    users: userRow.total,
   };
+}
+
+/** Overview "Drafts to finish": newest-edited drafts first. Call only after requirePermission("posts"). */
+export async function getDraftsToFinish(limit = 5) {
+  return db
+    .select({ id: posts.id, title: posts.title, updatedAt: posts.updatedAt })
+    .from(posts)
+    .where(eq(posts.status, "draft"))
+    .orderBy(desc(posts.updatedAt))
+    .limit(limit);
 }

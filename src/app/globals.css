@@ -1,8 +1,10 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+@plugin "@tailwindcss/typography"; /* prose styles for articles (editor + public page) */
 
-@custom-variant dark (&:is(.dark *));
+/* Dark mode applies only when no [data-force-light] area (website, login) is on the page. */
+@custom-variant dark (&:is(.dark:not(:has([data-force-light])) *));
 
 @theme inline {
   --color-background: var(--background);
@@ -83,7 +85,7 @@
   --foreground: oklch(0.153 0.006 107.1);
 }
 
-.dark {
+.dark:not(:has([data-force-light])) {
   --background: oklch(0.153 0.006 107.1);
   --foreground: oklch(0.988 0.003 106.5);
   --card: oklch(0.228 0.013 107.4);
@@ -127,4 +129,31 @@
   html {
     @apply font-sans;
   }
+}
+/*
+ * Public website theme (shadcn style, ENSP brand colour).
+ * Active whenever a page renders an element with [data-site-theme] (the (site) layout).
+ * Set on :root so portaled UI (mobile menu, dropdowns) gets it too. Dashboard is untouched.
+ * - primary = ENSP logo orange (#EF8E13) with near-black text (good contrast)
+ * - rounded corners follow the shadcn preset (only the ENSP logo stays square)
+ */
+:root:has([data-site-theme]) {
+  --primary: #ef8e13;
+  --primary-foreground: #141414;
+  --ring: #ef8e13;
+}
+
+/* Website and login pages: keep native controls (scrollbars, inputs) light too.
+   !important beats the inline color-scheme that next-themes sets on <html>. */
+:root:has([data-force-light]) {
+  color-scheme: light !important;
+}
+
+/* Tiptap editor: grey hint text in an empty editor ("Start writing your article…") */
+.ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+  color: var(--muted-foreground);
 }

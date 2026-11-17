@@ -1,7 +1,12 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { EyeIcon, EyeOffIcon, UserPlusIcon, WandSparklesIcon } from "lucide-react";
+import {
+  EyeIcon,
+  EyeOffIcon,
+  UserPlusIcon,
+  WandSparklesIcon,
+} from "lucide-react";
 import { toast } from "sonner";
 import { createUserAction } from "@/server/actions/users";
 import { createUserSchema } from "@/lib/validations/user";
@@ -16,7 +21,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { AccessFields } from "./access-fields";
 
@@ -55,14 +66,17 @@ export function CreateUserDialog() {
     const parsed = createUserSchema.safeParse(form);
     if (!parsed.success) return setError(parsed.error.issues[0].message);
     if (parsed.data.role === "editor" && parsed.data.permissions.length === 0) {
-      return setError("Give the editor at least one privilege, or make them an admin.");
+      return setError(
+        "Give the editor at least one privilege, or make them an admin.",
+      );
     }
     setError(null);
     startTransition(async () => {
       const result = await createUserAction(parsed.data);
       if (!result.ok) return setError(result.error);
       toast.success(`Account created for ${parsed.data.email}`, {
-        description: "Share the email and password with them so they can log in.",
+        description:
+          "Share the email and password with them so they can log in.",
       });
       onOpenChange(false);
     });
@@ -113,7 +127,9 @@ export function CreateUserDialog() {
                     id="new-password"
                     type={showPassword ? "text" : "password"}
                     value={form.password}
-                    onChange={(e) => setForm({ ...form, password: e.target.value })}
+                    onChange={(e) =>
+                      setForm({ ...form, password: e.target.value })
+                    }
                     autoComplete="new-password"
                     className="pr-9"
                     required
@@ -122,9 +138,15 @@ export function CreateUserDialog() {
                     type="button"
                     onClick={() => setShowPassword((s) => !s)}
                     className="absolute inset-y-0 right-2 flex items-center text-muted-foreground hover:text-foreground"
-                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    aria-label={
+                      showPassword ? "Hide password" : "Show password"
+                    }
                   >
-                    {showPassword ? <EyeOffIcon className="size-4" /> : <EyeIcon className="size-4" />}
+                    {showPassword ? (
+                      <EyeOffIcon className="size-4" />
+                    ) : (
+                      <EyeIcon className="size-4" />
+                    )}
                   </button>
                 </div>
                 <Button
@@ -139,7 +161,9 @@ export function CreateUserDialog() {
                   Generate
                 </Button>
               </div>
-              <FieldDescription>At least 8 characters. Share it with the person privately.</FieldDescription>
+              <FieldDescription>
+                At least 8 characters. Share it with the person privately.
+              </FieldDescription>
             </Field>
 
             <AccessFields
@@ -147,14 +171,20 @@ export function CreateUserDialog() {
               role={form.role}
               permissions={form.permissions}
               onRoleChange={(role) => setForm({ ...form, role })}
-              onPermissionsChange={(permissions) => setForm({ ...form, permissions })}
+              onPermissionsChange={(permissions) =>
+                setForm({ ...form, permissions })
+              }
             />
 
             {error ? <FieldError>{error}</FieldError> : null}
           </FieldGroup>
 
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+            >
               Cancel
             </Button>
             <Button type="submit" disabled={pending}>

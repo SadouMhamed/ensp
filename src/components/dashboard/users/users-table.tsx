@@ -1,4 +1,8 @@
-import { PERMISSION_INFO, ROLE_INFO, cleanPermissions } from "@/lib/permissions";
+import {
+  PERMISSION_INFO,
+  ROLE_INFO,
+  cleanPermissions,
+} from "@/lib/permissions";
 import type { AdminUserRow } from "@/server/queries/users";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -12,13 +16,30 @@ import {
 } from "@/components/ui/table";
 import { UserRowActions } from "./user-row-actions";
 
-const dateFormat = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", year: "numeric" });
+const dateFormat = new Intl.DateTimeFormat("en-GB", {
+  day: "numeric",
+  month: "short",
+  year: "numeric",
+});
 
 function initials(name: string) {
-  return name.split(/\s+/).filter(Boolean).slice(0, 2).map((p) => p[0]?.toUpperCase()).join("") || "?";
+  return (
+    name
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((p) => p[0]?.toUpperCase())
+      .join("") || "?"
+  );
 }
 
-export function UsersTable({ users, currentUserId }: { users: AdminUserRow[]; currentUserId: string }) {
+export function UsersTable({
+  users,
+  currentUserId,
+}: {
+  users: AdminUserRow[];
+  currentUserId: string;
+}) {
   return (
     <div className="overflow-hidden rounded-lg border">
       <Table>
@@ -42,26 +63,40 @@ export function UsersTable({ users, currentUserId }: { users: AdminUserRow[]; cu
                 <TableCell className="pl-4">
                   <div className="flex items-center gap-3">
                     <Avatar className="size-8 rounded-lg">
-                      <AvatarFallback className="rounded-lg">{initials(u.name)}</AvatarFallback>
+                      <AvatarFallback className="rounded-lg">
+                        {initials(u.name)}
+                      </AvatarFallback>
                     </Avatar>
                     <div className="grid leading-tight">
                       <span className="font-medium">
                         {u.name}
-                        {isSelf ? <span className="ml-1.5 text-xs text-muted-foreground">(you)</span> : null}
+                        {isSelf ? (
+                          <span className="ml-1.5 text-xs text-muted-foreground">
+                            (you)
+                          </span>
+                        ) : null}
                       </span>
-                      <span className="text-xs text-muted-foreground">{u.email}</span>
+                      <span className="text-xs text-muted-foreground">
+                        {u.email}
+                      </span>
                     </div>
                   </div>
                 </TableCell>
                 <TableCell>
-                  <Badge variant={u.role === "admin" ? "default" : "outline"}>{ROLE_INFO[u.role].label}</Badge>
+                  <Badge variant={u.role === "admin" ? "default" : "outline"}>
+                    {ROLE_INFO[u.role].label}
+                  </Badge>
                 </TableCell>
                 <TableCell className="hidden md:table-cell">
                   <div className="flex flex-wrap gap-1">
                     {u.role === "admin" ? (
-                      <span className="text-sm text-muted-foreground">Everything</span>
+                      <span className="text-sm text-muted-foreground">
+                        Everything
+                      </span>
                     ) : perms.length === 0 ? (
-                      <span className="text-sm text-muted-foreground">None</span>
+                      <span className="text-sm text-muted-foreground">
+                        None
+                      </span>
                     ) : (
                       perms.map((p) => (
                         <Badge key={p} variant="secondary">
