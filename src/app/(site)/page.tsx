@@ -1,4 +1,5 @@
 import { CeoMessage } from "@/components/site/home/ceo-message";
+import { Gallery } from "@/components/site/home/gallery";
 import { Hero } from "@/components/site/home/hero";
 import { LatestNews } from "@/components/site/home/latest-news";
 import { Organisation } from "@/components/site/home/organisation";
@@ -7,7 +8,7 @@ import { Strengths } from "@/components/site/home/strengths";
 import { Vision } from "@/components/site/home/vision";
 
 // Page d'accueil (structure validée par le client) : héro → Présentation →
-// Organisation → Notre vision → Nos atouts clés → Mot du PDG → Actualités.
+// Organisation → Notre vision → Nos atouts clés → Mot du PDG → L'ENSP en images → Actualités.
 // Textes dans src/content/site.ts.
 export default function HomePage() {
   return (
@@ -18,6 +19,7 @@ export default function HomePage() {
       <Vision />
       <Strengths />
       <CeoMessage />
+      <Gallery />
       <LatestNews />
     </>
   );

@@ -548,6 +548,132 @@ export const home = {
     name: "Farid DERBAL",
     role: "Président-Directeur Général",
   },
+
+  // 6. L'ENSP en images (galerie)
+  gallery: {
+    eyebrow: "Galerie",
+    title: "L'ENSP en images",
+    description:
+      "Nos équipes, nos équipements et nos interventions sur les sites pétroliers et gaziers.",
+    slides: [
+      {
+        id: "equipe-chantier",
+        tag: "Sur le terrain",
+        title: "Nos équipes au cœur des chantiers.",
+        description:
+          "Des femmes et des hommes mobilisés sur les sites de forage, au service des structures opérationnelles de SONATRACH.",
+        image: "/images/gallery/01-equipe-chantier.jpg",
+        imageAlt:
+          "Grande équipe de l'ENSP en tenue de travail devant un appareil de forage dans le désert",
+      },
+      {
+        id: "plancher-forage",
+        tag: "Forage",
+        title: "Au pied de nos appareils.",
+        description:
+          "Une large gamme de prestations intégrées, de l'ingénierie à l'exécution sur le terrain.",
+        image: "/images/gallery/02-plancher-forage.jpg",
+        imageAlt:
+          "Deux opérateurs de l'ENSP se dirigeant vers un mât de forage sur un chantier",
+      },
+      {
+        id: "tiges-forage",
+        tag: "Interventions",
+        title: "Un savoir-faire éprouvé.",
+        description:
+          "Plus de quarante ans d'expertise dans les services aux puits, au service de la performance des opérations.",
+        image: "/images/gallery/03-tiges-forage.jpg",
+        imageAlt:
+          "Opérateur de l'ENSP préparant des tiges sur un chantier, devant un mât de forage",
+      },
+      {
+        id: "appareil-forage",
+        tag: "Appareils de forage",
+        title: "Des moyens adaptés à chaque puits.",
+        description:
+          "Un parc d'équipements renforcé par des programmes d'investissement ambitieux.",
+        image: "/images/gallery/04-appareil-forage.jpg",
+        imageAlt:
+          "Opérateur de l'ENSP de dos, face à un appareil de forage au crépuscule",
+      },
+      {
+        id: "hse",
+        tag: "HSE",
+        title: "La sécurité avant tout.",
+        description:
+          "La santé, la sécurité et le respect de l'environnement guident chacune de nos interventions.",
+        image: "/images/gallery/05-hse.jpg",
+        imageAlt:
+          "Opérateur de l'ENSP portant casque, masque respiratoire et gilet haute visibilité",
+      },
+      {
+        id: "intervention",
+        tag: "Intervention",
+        title: "Prêts à intervenir.",
+        description:
+          "Des équipes d'intervention formées et équipées pour agir rapidement sur les sites.",
+        image: "/images/gallery/06-intervention.jpg",
+        imageAlt:
+          "Agent de l'équipe d'intervention de l'ENSP de dos, face à un groupe d'opérateurs",
+      },
+      {
+        id: "atelier-usinage",
+        tag: "Fabrication",
+        title: "Un savoir-faire 100 % national.",
+        description:
+          "Nos ateliers conçoivent, fabriquent et réhabilitent localement des outils de forage.",
+        image: "/images/gallery/07-atelier-usinage.jpg",
+        imageAlt: "Opérateur de l'ENSP sur un grand tour à commande numérique en atelier",
+      },
+      {
+        id: "banc-essai",
+        tag: "Essais & mesures",
+        title: "Des équipements contrôlés.",
+        description:
+          "Essais et contrôles garantissent des solutions fiables, conformes aux standards internationaux.",
+        image: "/images/gallery/08-banc-essai.jpg",
+        imageAlt: "Opérateur de l'ENSP au pupitre de commande d'un banc d'essai en atelier",
+      },
+      {
+        id: "equipe-unite-surface",
+        tag: "Équipements de surface",
+        title: "Une équipe soudée.",
+        description:
+          "Esprit d'équipe, rigueur et dialogue font la force de nos collaborateurs.",
+        image: "/images/gallery/09-equipe-unite-surface.jpg",
+        imageAlt:
+          "Cinq opérateurs de l'ENSP sur une unité montée sur remorque, dans le désert",
+      },
+      {
+        id: "equipe-production",
+        tag: "Production",
+        title: "Au service de la production.",
+        description:
+          "Nous accompagnons SONATRACH et ses partenaires dans l'atteinte de leurs objectifs.",
+        image: "/images/gallery/10-equipe-production.jpg",
+        imageAlt:
+          "Quatre opérateurs de l'ENSP bras croisés devant une installation de production",
+      },
+      {
+        id: "sante",
+        tag: "Santé au travail",
+        title: "Prendre soin de nos collaborateurs.",
+        description:
+          "Améliorer les conditions de travail et de vie de nos équipes fait partie de nos engagements.",
+        image: "/images/gallery/11-sante.jpg",
+        imageAlt: "Infirmière de l'ENSP prenant en charge un collaborateur à l'infirmerie",
+      },
+      {
+        id: "laboratoire",
+        tag: "Laboratoire",
+        title: "La précision au quotidien.",
+        description:
+          "Nos laboratoires appuient les opérations par des analyses et des mesures fiables.",
+        image: "/images/gallery/12-laboratoire.jpg",
+        imageAlt: "Laboratoire de l'ENSP équipé d'appareils de mesure",
+      },
+    ],
+  },
 };
 
 /**
