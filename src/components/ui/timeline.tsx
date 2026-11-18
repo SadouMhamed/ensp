@@ -29,6 +29,8 @@ if (typeof window !== "undefined") {
  *   position) instead of hand-written scroll percentages.
  * - Colors use the theme (primary, foreground, muted-foreground) instead of inline styles.
  * - With "reduce motion" turned on, texts are shown at once (only the sideways scroll stays).
+ * - `highlightOnScroll`: the background turns brand orange while the section is on screen
+ *   (data-highlight on the section), then back to white when you scroll past it.
  */
 
 export type TimelineEntry = {
@@ -51,6 +53,8 @@ export type TimelineProps = {
   media?: ReactNode;
   /** Reveal animation duration, in seconds (relative, since reveals follow the scroll). */
   duration?: number;
+  /** Turn the background orange (brand color) while the section is in view. */
+  highlightOnScroll?: boolean;
   id?: string;
   className?: string;
 };
@@ -112,6 +116,7 @@ export default function Timeline({
   periodLabel,
   media,
   duration = 1.2,
+  highlightOnScroll = false,
   id,
   className,
 }: TimelineProps) {
@@ -165,6 +170,18 @@ export default function Timeline({
         },
       );
 
+      // Orange background while the section is in the middle of the screen.
+      const section = sectionRef.current;
+      if (highlightOnScroll && section) {
+        ScrollTrigger.create({
+          trigger: section,
+          start: "top 50%",
+          end: "bottom 50%",
+          onToggle: (self) =>
+            section.toggleAttribute("data-highlight", self.isActive),
+        });
+      }
+
       if (reducedMotion) return;
 
       // 3. Each item: stem + dot grow, then title and text slide up line by line.
@@ -213,14 +230,20 @@ export default function Timeline({
 
       return () => splits.forEach((s) => s.revert());
     },
-    { dependencies: [reducedMotion, d, items], scope: sectionRef },
+    {
+      dependencies: [reducedMotion, d, items, highlightOnScroll],
+      scope: sectionRef,
+    },
   );
 
   return (
     <section
       ref={sectionRef}
       id={id}
-      className={cn("relative w-full overflow-hidden bg-background", className)}
+      className={cn(
+        "group/timeline relative w-full overflow-hidden bg-background transition-colors duration-700 ease-out data-highlight:bg-primary",
+        className,
+      )}
     >
       <div
         ref={pinRef}
@@ -242,12 +265,12 @@ export default function Timeline({
               aria-hidden
               className="absolute top-1/2 left-0 flex w-full -translate-y-1/2 items-center"
             >
-              <span className="size-[.8vw] shrink-0 rounded-full bg-primary max-sm:size-[2vw]" />
+              <span className="size-[.8vw] shrink-0 rounded-full bg-primary transition-colors duration-700 group-data-highlight/timeline:bg-foreground max-sm:size-[2vw]" />
               <span
                 data-journey-line
-                className="h-px flex-1 origin-left bg-primary"
+                className="h-px flex-1 origin-left bg-primary transition-colors duration-700 group-data-highlight/timeline:bg-foreground"
               />
-              <span className="size-[.8vw] shrink-0 rounded-full bg-primary max-sm:size-[2vw]" />
+              <span className="size-[.8vw] shrink-0 rounded-full bg-primary transition-colors duration-700 group-data-highlight/timeline:bg-foreground max-sm:size-[2vw]" />
             </div>
 
             {/* Top half: title + even items */}
@@ -269,7 +292,7 @@ export default function Timeline({
             <div className="flex h-1/2">
               <div className="flex w-[22vw] shrink-0 items-end pb-[1vw] max-sm:w-[60vw] max-sm:pb-[3vw]">
                 {periodLabel ? (
-                  <p className="text-[1.65vw] leading-none text-muted-foreground max-sm:text-[4.2vw]">
+                  <p className="text-[1.65vw] leading-none text-muted-foreground transition-colors duration-700 group-data-highlight/timeline:text-foreground/75 max-sm:text-[4.2vw]">
                     {periodLabel}
                   </p>
                 ) : null}
@@ -314,12 +337,12 @@ function TimelineItemView({
       >
         <span
           data-dot
-          className="size-[1vw] shrink-0 -translate-x-1/2 rounded-full bg-primary max-sm:size-[2.5vw]"
+          className="size-[1vw] shrink-0 -translate-x-1/2 rounded-full bg-primary transition-colors duration-700 group-data-highlight/timeline:bg-foreground max-sm:size-[2.5vw]"
         />
         <span
           data-stem
           className={cn(
-            "w-px flex-1 bg-primary",
+            "w-px flex-1 bg-primary transition-colors duration-700 group-data-highlight/timeline:bg-foreground",
             isTop ? "origin-bottom" : "origin-top",
           )}
         />
@@ -331,7 +354,7 @@ function TimelineItemView({
           isTop ? "-mt-[0.4vw]" : "justify-end pb-[0.2vw]",
         )}
       >
-        <span className="text-[1.1vw] font-semibold text-primary tabular-nums max-sm:text-[3.6vw]">
+        <span className="text-[1.1vw] font-semibold text-primary tabular-nums transition-colors duration-700 group-data-highlight/timeline:text-foreground max-sm:text-[3.6vw]">
           {item.marker}
         </span>
         <h3
@@ -342,7 +365,7 @@ function TimelineItemView({
         </h3>
         <p
           data-text
-          className="w-[90%] text-[1.3vw] leading-[1.25] text-muted-foreground max-sm:text-[4.4vw]"
+          className="w-[90%] text-[1.3vw] leading-[1.25] text-muted-foreground transition-colors duration-700 group-data-highlight/timeline:text-foreground/75 max-sm:text-[4.4vw]"
         >
           {item.description}
         </p>

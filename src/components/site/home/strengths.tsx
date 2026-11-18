@@ -6,6 +6,7 @@ import { getSection } from "@/server/queries/sections";
 /**
  * 4. Nos Atouts Clés : timeline horizontale animée au défilement (GSAP).
  * Les atouts sont numérotés 01 → 06 et alternent en haut / en bas de la ligne.
+ * Le fond passe à l'orange ENSP quand on arrive sur la section, puis redevient blanc après.
  * Contenu modifiable dans le tableau de bord (Website sections → Home: Nos atouts clés).
  */
 export async function Strengths() {
@@ -41,6 +42,7 @@ export async function Strengths() {
       }
       items={items}
       duration={1.4}
+      highlightOnScroll
     />
   );
 }
