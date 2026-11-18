@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { LogInIcon } from "lucide-react";
-import { BRAND_NAME, Logo } from "@/components/brand/logo";
+import { BRAND_FULL_NAME, BRAND_NAME, Logo } from "@/components/brand/logo";
 import { topLinks } from "@/content/site";
 import { Container } from "./section";
 import { DesktopNav } from "./desktop-nav";
@@ -18,11 +18,19 @@ export function SiteHeader() {
         <Link
           href="/"
           className="flex items-center gap-3 py-3 pr-6 lg:border-r"
-          aria-label={`${BRAND_NAME} – accueil`}
+          aria-label={`${BRAND_FULL_NAME} (${BRAND_NAME}) – accueil`}
         >
-          <Logo size={44} priority />
-          <span className="text-lg font-semibold tracking-wide">
-            {BRAND_NAME}
+          {/* Official full logo (client request), sized to fill the two-row header */}
+          <Logo
+            variant="full"
+            size={64}
+            priority
+            className="h-auto w-12 lg:w-16"
+          />
+          {/* Full official name on two lines, next to the logo (client request) */}
+          <span className="flex flex-col text-sm leading-tight font-semibold sm:text-base">
+            <span>Entreprise Nationale</span>
+            <span>de Services aux Puits</span>
           </span>
         </Link>
 

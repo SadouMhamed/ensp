@@ -58,11 +58,25 @@ export function MobileNav() {
                     </Link>
                   ))}
                 </div>
+              ) : item.children?.length ? (
+                // sub-links (e.g. « Notre Groupe ») listed right under the item
+                <div className="mb-2 flex flex-col gap-1 border-l-2 border-primary py-1 pl-4">
+                  {item.children.map((child) => (
+                    <Link
+                      key={child.title}
+                      href={child.href}
+                      onClick={close}
+                      className="py-1 text-sm text-muted-foreground hover:text-foreground"
+                    >
+                      {child.title}
+                    </Link>
+                  ))}
+                </div>
               ) : null}
             </div>
           ))}
           <Separator className="my-4" />
-          {/* utility links not already in the main menu (avoids "Careers" twice) */}
+          {/* utility links not already in the main menu */}
           {topLinks
             .filter((l) => !mainNav.some((m) => m.href === l.href))
             .map((l) => (

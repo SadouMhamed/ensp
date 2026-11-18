@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     default: "ENSP",
     template: "%s | ENSP",
   },
-  description: "Site officiel de l'ENSP – Entreprise Nationale des Services aux Puits",
+  description: "Site officiel de l'ENSP – Entreprise Nationale de Services aux Puits",
   // Test site: a "noindex" tag on every page, on top of robots.txt.
   robots: allowIndexing ? undefined : { index: false, follow: false },
 };

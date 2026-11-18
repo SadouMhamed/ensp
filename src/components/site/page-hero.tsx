@@ -1,7 +1,7 @@
 import { Media } from "./media";
 import { Container, Eyebrow } from "./section";
 
-/** Dark title band at the top of inner pages (About, Services, Careers…). */
+/** Dark title band at the top of inner pages (About, Services, Contact…). */
 export function PageHero({
   eyebrow,
   title,

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import {
   Building2Icon,
   BriefcaseIcon,
@@ -10,7 +11,7 @@ import {
   WrenchIcon,
   type LucideIcon,
 } from "lucide-react";
-import { home } from "@/content/site";
+import { group, home } from "@/content/site";
 import { cn } from "@/lib/utils";
 import { getSection } from "@/server/queries/sections";
 import {
@@ -58,8 +59,6 @@ export async function OrgChart() {
     { title: "Soutien opérationnel", icon: WrenchIcon, items: ops("support") },
     { title: "Directions régionales", icon: MapPinIcon, items: ops("region") },
   ];
-  const active = chart.subsidiaries.filter((s) => !s.liquidation);
-  const inLiquidation = chart.subsidiaries.filter((s) => s.liquidation);
 
   const branches: Branch[] = [
     {
@@ -99,45 +98,27 @@ export async function OrgChart() {
       title: "Filiales",
       description: "Sociétés du groupe ENSP",
       icon: CircleDotIcon,
-      count: chart.subsidiaries.length,
+      count: group.subsidiaries.length,
       content: (
         <div className="flex flex-col gap-3">
-          {active.map((s) => (
-            <div
-              key={s.name}
-              className="flex flex-col gap-1 rounded-lg border p-3"
-            >
-              <div className="flex items-center justify-between gap-2">
-                <span className="font-semibold tracking-wide">{s.name}</span>
-                <Badge>Active</Badge>
-              </div>
-              {"text" in s && s.text ? (
-                <p className="text-xs leading-relaxed text-muted-foreground">
-                  {s.text}
-                </p>
-              ) : null}
-              {"website" in s && s.website ? (
-                <a
-                  href={s.website}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="w-fit text-xs font-medium text-primary hover:underline"
-                >
-                  {s.website.replace("https://", "")}
-                </a>
-              ) : null}
-            </div>
-          ))}
-          {inLiquidation.length > 0 ? (
+          <EntityList items={group.subsidiaries.map((s) => s.name)} />
+          {group.inLiquidation.length > 0 ? (
             <div className="flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground">
               <span>En liquidation :</span>
-              {inLiquidation.map((s) => (
-                <Badge key={s.name} variant="outline" className="opacity-70">
-                  {s.name}
+              {group.inLiquidation.map((name) => (
+                <Badge key={name} variant="outline" className="opacity-70">
+                  {name}
                 </Badge>
               ))}
             </div>
           ) : null}
+          {/* details live on the « Notre Groupe » page */}
+          <Link
+            href="/notre-groupe"
+            className="w-fit text-xs font-medium text-primary hover:underline"
+          >
+            Voir Notre Groupe →
+          </Link>
         </div>
       ),
     },

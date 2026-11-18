@@ -47,7 +47,7 @@ export async function Hero() {
 
           <Container className="relative flex h-full flex-col justify-end gap-5 pb-14 text-white md:pb-20">
             {i === 0 ? (
-              <h1 className="flex items-center gap-2 text-sm font-medium tracking-wide text-white/85 uppercase">
+              <h1 className="flex items-center gap-2 text-sm font-medium tracking-wide text-white/85">
                 <span className="size-2 rounded-full bg-primary" aria-hidden />
                 {hero.title}
               </h1>

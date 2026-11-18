@@ -3,12 +3,12 @@
  *
  * Les textes de l'accueil (Présentation, Organisation, Vision, Atouts clés, Mot du PDG)
  * sont les textes officiels fournis par l'ENSP. Coordonnées, implantations, activités et
- * filiales : fiche technique ENSP. ⚠️ Reste provisoire : la page Carrières.
+ * filiales : fiche technique ENSP.
  */
 
 export const site = {
   name: "ENSP",
-  legalName: "Entreprise Nationale des Services aux Puits, SPA",
+  legalName: "Entreprise Nationale de Services aux Puits, SPA",
   // Nom arabe tel qu'il figure sur le logo
   nameAr: "م.و.خ.ا",
   tagline:
@@ -107,13 +107,16 @@ export const locations: {
   },
 ];
 
-export type NavLink = { title: string; href: string; description?: string };
+export type NavLink = {
+  title: string;
+  href: string;
+  description?: string;
+  /** Sub-links shown in a dropdown (desktop) or under the item (mobile). */
+  children?: NavLink[];
+};
 
 /** Petite barre du haut. */
-export const topLinks: NavLink[] = [
-  { title: "Carrières", href: "/careers" },
-  { title: "Contact", href: "/contact" },
-];
+export const topLinks: NavLink[] = [{ title: "Contact", href: "/contact" }];
 
 export type Service = {
   id: string;
@@ -279,12 +282,47 @@ export const services: Service[] = [
   },
 ];
 
-/** Navigation principale. « Services » ouvre le méga-menu. */
+/** Navigation principale. « Services » ouvre le méga-menu.
+ * « Notre Groupe » ouvre un menu déroulant (page /notre-groupe). */
 export const mainNav: NavLink[] = [
   { title: "À propos", href: "/about" },
   { title: "Services", href: "/services" },
+  {
+    title: "Notre Groupe",
+    href: "/notre-groupe",
+    children: [
+      { title: "Filiales du Groupe ENSP", href: "/notre-groupe" },
+      { title: "ALSCIF", href: "/notre-groupe#alscif" },
+      { title: "DFSP", href: "/notre-groupe#dfsp" },
+      { title: "HESP", href: "/notre-groupe#hesp" },
+    ],
+  },
+  {
+    title: "Nos valeurs",
+    href: "/nos-valeurs",
+    children: [
+      { title: "Code d'éthique", href: "/nos-valeurs#code-ethique" },
+      { title: "SMI", href: "/nos-valeurs#smi" },
+      { title: "Politique QHSE", href: "/nos-valeurs#politique-qhse" },
+      { title: "Contenu local", href: "/nos-valeurs#contenu-local" },
+    ],
+  },
+  {
+    title: "R&D",
+    href: "/recherche-developpement",
+    children: [
+      { title: "Présentation", href: "/recherche-developpement#presentation" },
+      {
+        title: "Projets développés",
+        href: "/recherche-developpement#projets-developpes",
+      },
+      {
+        title: "Conventions & partenariats",
+        href: "/recherche-developpement#conventions-partenariats",
+      },
+    ],
+  },
   { title: "Actualités", href: "/blog" },
-  { title: "Carrières", href: "/careers" },
 ];
 
 /** Page d'accueil : héro + les 5 sections (textes officiels fournis par l'ENSP). */
@@ -333,7 +371,7 @@ export const home = {
 
   // 1. Présentation
   presentation: {
-    eyebrow: "Présentation de l'entreprise",
+    eyebrow: "Présentation",
     title: "Un acteur national de référence au service du secteur énergétique",
     paragraphs: [
       "Filiale à 100 % du Groupe SONATRACH, l'Entreprise Nationale de Services aux Puits « ENSP » s'impose comme un acteur majeur des services parapétroliers en Algérie. Forte de plus de quatre décennies d'expertise, elle joue un rôle clé dans le développement et la performance des activités pétrolières et gazières, en apportant des solutions intégrées couvrant l'ensemble des services aux puits.",
@@ -355,7 +393,7 @@ export const home = {
 
   // 2. Organisation
   organisation: {
-    eyebrow: "Organisation de l'ENSP",
+    eyebrow: "Organisation",
     title: "Une organisation intégrée au service de la performance",
     paragraphs: [
       "L'ENSP dispose d'une organisation structurée et intégrée, conçue pour garantir performance, réactivité et efficacité dans la conduite de ses activités.",
@@ -426,34 +464,12 @@ export const home = {
         { name: "Direction Régionale Sud-Ouest", kind: "region" },
         { name: "Direction Régionale Hassi R'mel", kind: "region" },
       ],
-      subsidiaries: [
-        {
-          name: "ALSCIF",
-          liquidation: false,
-          text: "Stimulation, cimentation et fracturation hydraulique des puits.",
-          website: "https://www.alscif.com",
-        },
-        {
-          name: "DFSP",
-          liquidation: false,
-          text: "Ingénierie et distribution des fluides de forage : ingénieurs boue, cabines laboratoires et gestion des déchets.",
-        },
-        {
-          name: "HESP",
-          liquidation: false,
-          text: "Diagraphies en trou ouvert et en trou tubé, perforation TCP et évaluation des formations.",
-          website: "https://www.hesp.com",
-        },
-        { name: "WESP", liquidation: true },
-        { name: "MESP", liquidation: true },
-        { name: "ALBARYTE", liquidation: true },
-      ],
     },
   },
 
   // 3. Notre Vision
   vision: {
-    eyebrow: "Notre Vision",
+    eyebrow: "Notre vision",
     statement:
       "L'ENSP ambitionne de s'affirmer en tant qu'outil national de services de référence, au service des structures opérationnelles de SONATRACH et de ses partenaires, en consolidant son leadership dans les services aux puits et en développant sa présence pour le marché international.",
     text: "Guidée par une vision stratégique fondée sur l'innovation, l'efficacité et la durabilité, l'ENSP intègre pleinement les enjeux de transformation du secteur énergétique, notamment à travers la digitalisation de ses activités, la réduction de son empreinte carbone et le développement des solutions adaptées aux ressources non conventionnelles.",
@@ -534,13 +550,49 @@ export const home = {
   },
 };
 
+/**
+ * Rubrique « Notre Groupe » (structure validée par le client) :
+ * Filiales du Groupe ENSP · ALSCIF · DFSP · HESP.
+ * Activités : fiche technique ENSP. ⚠️ Texte d'introduction provisoire,
+ * à remplacer par le texte officiel envoyé par l'ENSP.
+ */
+export const group = {
+  eyebrow: "Notre Groupe",
+  title: "Filiales du Groupe ENSP",
+  intro:
+    "L'ENSP s'appuie sur des filiales spécialisées qui complètent son offre de services aux puits.",
+  subsidiaries: [
+    {
+      id: "alscif",
+      name: "ALSCIF",
+      text: "Stimulation, cimentation et fracturation hydraulique des puits.",
+      website: "https://www.alscif.com",
+    },
+    {
+      id: "dfsp",
+      name: "DFSP",
+      text: "Ingénierie et distribution des fluides de forage : ingénieurs boue, cabines laboratoires et gestion des déchets.",
+    },
+    {
+      id: "hesp",
+      name: "HESP",
+      text: "Diagraphies en trou ouvert et en trou tubé, perforation TCP et évaluation des formations.",
+      website: "https://www.hesp.com",
+    },
+  ] as { id: string; name: string; text: string; website?: string }[],
+  // Filiales en liquidation (organigramme officiel) : affichées seulement dans l'organigramme.
+  inLiquidation: ["WESP", "MESP", "ALBARYTE"],
+};
+
 export const footerColumns: { title: string; links: NavLink[] }[] = [
   {
     title: "Entreprise",
     links: [
       { title: "À propos", href: "/about" },
+      { title: "Notre Groupe", href: "/notre-groupe" },
+      { title: "Nos valeurs", href: "/nos-valeurs" },
+      { title: "Recherche & développement", href: "/recherche-developpement" },
       { title: "Actualités", href: "/blog" },
-      { title: "Carrières", href: "/careers" },
     ],
   },
   {
@@ -568,3 +620,52 @@ export function telHref(phone: string) {
   const first = phone.split("·")[0].replace(/\D/g, "").replace(/^0/, "");
   return `tel:+213${first}`;
 }
+
+/** Une partie d'une page de rubrique (ex. « Code d'éthique »), avec son ancre. */
+export type TopicSection = {
+  id: string;
+  title: string;
+  /** Petite ligne sous le titre (facultative). */
+  subtitle?: string;
+  /** Vide = « Contenu à venir » s'affiche, en attendant le texte de l'ENSP. */
+  paragraphs: string[];
+};
+
+export type TopicPage = {
+  eyebrow: string;
+  title: string;
+  intro?: string;
+  sections: TopicSection[];
+};
+
+/** Rubrique « Nos valeurs » (structure validée par le client). ⚠️ Textes à recevoir de l'ENSP. */
+export const valuesPage: TopicPage = {
+  eyebrow: "ENSP",
+  title: "Nos valeurs",
+  sections: [
+    { id: "code-ethique", title: "Code d'éthique", paragraphs: [] },
+    {
+      id: "smi",
+      title: "SMI",
+      subtitle: "Système de Management Intégré",
+      paragraphs: [],
+    },
+    { id: "politique-qhse", title: "Politique QHSE", paragraphs: [] },
+    { id: "contenu-local", title: "Contenu local", paragraphs: [] },
+  ],
+};
+
+/** Rubrique « Recherche & développement » (structure validée par le client). ⚠️ Textes à recevoir de l'ENSP. */
+export const rdPage: TopicPage = {
+  eyebrow: "R&D",
+  title: "Recherche & développement",
+  sections: [
+    { id: "presentation", title: "Présentation", paragraphs: [] },
+    { id: "projets-developpes", title: "Projets développés", paragraphs: [] },
+    {
+      id: "conventions-partenariats",
+      title: "Conventions & partenariats",
+      paragraphs: [],
+    },
+  ],
+};

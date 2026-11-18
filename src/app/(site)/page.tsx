@@ -6,8 +6,9 @@ import { Presentation } from "@/components/site/home/presentation";
 import { Strengths } from "@/components/site/home/strengths";
 import { Vision } from "@/components/site/home/vision";
 
-// Page d'accueil : héro → Présentation → Organisation → Notre Vision →
-// Nos Atouts Clés → Mot du PDG → Actualités. Textes dans src/content/site.ts.
+// Page d'accueil (structure validée par le client) : héro → Présentation →
+// Organisation → Notre vision → Nos atouts clés → Mot du PDG → Actualités.
+// Textes dans src/content/site.ts.
 export default function HomePage() {
   return (
     <>

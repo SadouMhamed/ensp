@@ -15,7 +15,7 @@ export async function SiteFooter() {
     <StickyFooter
       brand={
         <Link href="/" className="flex w-fit items-center gap-3">
-          <Logo size={44} />
+          <Logo variant="full" size={64} />
           <span className="text-xl font-semibold tracking-wide">
             {BRAND_NAME}
           </span>
