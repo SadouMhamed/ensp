@@ -3,9 +3,14 @@
 import { useState } from "react";
 import {
   EllipsisVerticalIcon,
+  MonitorSmartphoneIcon,
   ShieldCheckIcon,
   Trash2Icon,
 } from "lucide-react";
+import {
+  getUserSessionsAction,
+  type UserSessionsResult,
+} from "@/server/actions/sessions";
 import type { AdminUserRow } from "@/server/queries/users";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,6 +22,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { DeleteUserDialog } from "./delete-user-dialog";
 import { EditAccessDialog } from "./edit-access-dialog";
+import {
+  SessionsDialog,
+  withNetworkFallback,
+} from "@/components/dashboard/sessions/sessions-dialog";
 
 export function UserRowActions({
   user,
@@ -25,8 +34,18 @@ export function UserRowActions({
   user: AdminUserRow;
   isSelf: boolean;
 }) {
-  const [dialog, setDialog] = useState<"edit" | "delete" | null>(null);
+  const [dialog, setDialog] = useState<
+    "edit" | "delete" | "sessions" | null
+  >(null);
+  const [sessionsPromise, setSessionsPromise] =
+    useState<Promise<UserSessionsResult> | null>(null);
   const close = (open: boolean) => !open && setDialog(null);
+
+  // Start loading on click (not in an effect), so the skeleton shows only as long as needed.
+  function openSessions() {
+    setSessionsPromise(withNetworkFallback(getUserSessionsAction(user.id)));
+    setDialog("sessions");
+  }
 
   return (
     <>
@@ -47,6 +66,10 @@ export function UserRowActions({
           <DropdownMenuItem onClick={() => setDialog("edit")}>
             <ShieldCheckIcon />
             Edit access
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={openSessions}>
+            <MonitorSmartphoneIcon />
+            Sessions
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem
@@ -71,6 +94,20 @@ export function UserRowActions({
       ) : null}
       {dialog === "delete" ? (
         <DeleteUserDialog user={user} open onOpenChange={close} />
+      ) : null}
+      {dialog === "sessions" && sessionsPromise ? (
+        <SessionsDialog
+          target={{
+            kind: "user",
+            userId: user.id,
+            name: user.name,
+            email: user.email,
+            isSelf,
+          }}
+          sessionsPromise={sessionsPromise}
+          open
+          onOpenChange={close}
+        />
       ) : null}
     </>
   );

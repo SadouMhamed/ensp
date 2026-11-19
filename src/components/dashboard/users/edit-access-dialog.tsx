@@ -10,6 +10,7 @@ import {
 } from "@/lib/permissions";
 import type { AdminUserRow } from "@/server/queries/users";
 import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Dialog,
   DialogContent,
@@ -61,25 +62,28 @@ export function EditAccessDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[90svh] overflow-y-auto sm:max-w-lg">
-        <form onSubmit={onSubmit} className="grid gap-6">
+      {/* Title and buttons stay put; only the fields scroll (shadcn ScrollArea). */}
+      <DialogContent className="flex max-h-[90svh] flex-col sm:max-w-lg">
+        <form onSubmit={onSubmit} className="flex min-h-0 flex-col gap-6">
           <DialogHeader>
             <DialogTitle>Edit access</DialogTitle>
             <DialogDescription>
               {user.name} · {user.email}
             </DialogDescription>
           </DialogHeader>
-          <FieldGroup>
-            <AccessFields
-              idPrefix={`edit-${user.id}`}
-              role={role}
-              permissions={permissions}
-              onRoleChange={setRole}
-              onPermissionsChange={setPermissions}
-              roleLocked={isSelf}
-            />
-            {error ? <FieldError>{error}</FieldError> : null}
-          </FieldGroup>
+          <ScrollArea className="-mx-6 -my-1 flex min-h-0 flex-col">
+            <FieldGroup className="px-6 py-1">
+              <AccessFields
+                idPrefix={`edit-${user.id}`}
+                role={role}
+                permissions={permissions}
+                onRoleChange={setRole}
+                onPermissionsChange={setPermissions}
+                roleLocked={isSelf}
+              />
+              {error ? <FieldError>{error}</FieldError> : null}
+            </FieldGroup>
+          </ScrollArea>
           <DialogFooter>
             <Button
               type="button"

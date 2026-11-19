@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -14,8 +15,8 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 
-// Design: shadcn login-02 block. GitHub login, "Sign up" and "Forgot password" removed
-// (accounts are created by an admin; no password-reset email is set up yet).
+// Design: shadcn login-02 block. GitHub login and "Sign up" removed
+// (accounts are created by an admin). "Forgot password" → /forgot-password.
 export function LoginForm({
   className,
   ...props
@@ -76,7 +77,15 @@ export function LoginForm({
           />
         </Field>
         <Field>
-          <FieldLabel htmlFor="password">Mot de passe</FieldLabel>
+          <div className="flex items-center">
+            <FieldLabel htmlFor="password">Mot de passe</FieldLabel>
+            <Link
+              href="/forgot-password"
+              className="ml-auto text-sm underline-offset-4 hover:underline"
+            >
+              Mot de passe oublié&nbsp;?
+            </Link>
+          </div>
           <Input
             id="password"
             name="password"

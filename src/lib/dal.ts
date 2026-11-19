@@ -29,6 +29,8 @@ export const getCurrentUser = cache(async () => {
   const { id, name, email, image } = session.user;
   return {
     id,
+    /** The session of this browser (lets the Sessions page mark "this device"). */
+    sessionId: session.session.id,
     name,
     email,
     image,

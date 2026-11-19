@@ -3,8 +3,12 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
 import { admin } from "better-auth/plugins";
 import { ac, adminRole, editorRole } from "@/lib/auth-roles";
+import { after } from "next/server";
 import { db } from "@/db";
 import * as schema from "@/db/schema";
+import { sendPasswordResetEmail } from "@/lib/email";
+
+const RESET_TOKEN_MINUTES = 30;
 
 function isLocalBaseURL() {
   const url = process.env.BETTER_AUTH_URL ?? "";
@@ -25,6 +29,30 @@ export const auth = betterAuth({
     // Private company dashboard: nobody can register from the website.
     // Accounts are created by admins (dashboard → Users) or by `npm run db:seed`.
     disableSignUp: true,
+
+    // "Forgot password" (pages /forgot-password → email → /reset-password).
+    // Account privacy: Better Auth answers the SAME message whether the email exists
+    // or not, and does dummy work for unknown emails. The email itself is sent in the
+    // background (see advanced.backgroundTasks) so sending it doesn't make the answer
+    // slower for real accounts. The API route also pads every answer to the same
+    // minimum time (src/app/api/auth/[...all]/route.ts).
+    sendResetPassword: ({ user, url }) =>
+      sendPasswordResetEmail({
+        to: user.email,
+        name: user.name,
+        url,
+        expiresInMinutes: RESET_TOKEN_MINUTES,
+      }),
+    resetPasswordTokenExpiresIn: RESET_TOKEN_MINUTES * 60, // single-use link
+    revokeSessionsOnPasswordReset: true, // a reset signs out every device
+  },
+
+  advanced: {
+    // Runs slow work (sending emails) after the answer is sent. `after` keeps the
+    // serverless function alive on Vercel until the email is out.
+    backgroundTasks: {
+      handler: (promise) => after(() => promise),
+    },
   },
 
   plugins: [

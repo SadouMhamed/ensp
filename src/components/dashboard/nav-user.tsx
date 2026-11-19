@@ -1,14 +1,24 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   CircleUserRoundIcon,
   EllipsisVerticalIcon,
   LogOutIcon,
+  MonitorSmartphoneIcon,
 } from "lucide-react";
 
 import { signOut } from "@/lib/auth-client";
+import {
+  getMySessionsAction,
+  type UserSessionsResult,
+} from "@/server/actions/sessions";
+import {
+  SessionsDialog,
+  withNetworkFallback,
+} from "@/components/dashboard/sessions/sessions-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -50,6 +60,13 @@ export function NavUser({
 }) {
   const { isMobile } = useSidebar();
   const router = useRouter();
+  const [sessionsPromise, setSessionsPromise] =
+    useState<Promise<UserSessionsResult> | null>(null);
+
+  // Start loading on click (not in an effect), so the skeleton shows only as long as needed.
+  function openSessions() {
+    setSessionsPromise(withNetworkFallback(getMySessionsAction()));
+  }
 
   async function handleSignOut() {
     await signOut();
@@ -112,6 +129,10 @@ export function NavUser({
                 <CircleUserRoundIcon />
                 Account
               </DropdownMenuItem>
+              <DropdownMenuItem onClick={openSessions}>
+                <MonitorSmartphoneIcon />
+                My sessions
+              </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleSignOut}>
@@ -120,6 +141,15 @@ export function NavUser({
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+        {/* Mounted only while open, so each opening loads fresh data. */}
+        {sessionsPromise ? (
+          <SessionsDialog
+            target={{ kind: "me" }}
+            sessionsPromise={sessionsPromise}
+            open
+            onOpenChange={(open) => !open && setSessionsPromise(null)}
+          />
+        ) : null}
       </SidebarMenuItem>
     </SidebarMenu>
   );

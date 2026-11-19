@@ -29,6 +29,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { AccessFields } from "./access-fields";
 
 function generatePassword() {
@@ -88,8 +89,9 @@ export function CreateUserDialog() {
         <UserPlusIcon />
         Add user
       </DialogTrigger>
-      <DialogContent className="max-h-[90svh] overflow-y-auto sm:max-w-lg">
-        <form onSubmit={onSubmit} className="grid gap-6">
+      {/* Title and buttons stay put; only the fields scroll (shadcn ScrollArea). */}
+      <DialogContent className="flex max-h-[90svh] flex-col sm:max-w-lg">
+        <form onSubmit={onSubmit} className="flex min-h-0 flex-col gap-6">
           <DialogHeader>
             <DialogTitle>Add user</DialogTitle>
             <DialogDescription>
@@ -97,87 +99,89 @@ export function CreateUserDialog() {
             </DialogDescription>
           </DialogHeader>
 
-          <FieldGroup>
-            <Field>
-              <FieldLabel htmlFor="new-name">Full name</FieldLabel>
-              <Input
-                id="new-name"
-                value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
-                autoComplete="off"
-                required
-              />
-            </Field>
-            <Field>
-              <FieldLabel htmlFor="new-email">Email</FieldLabel>
-              <Input
-                id="new-email"
-                type="email"
-                value={form.email}
-                onChange={(e) => setForm({ ...form, email: e.target.value })}
-                autoComplete="off"
-                required
-              />
-            </Field>
-            <Field>
-              <FieldLabel htmlFor="new-password">Temporary password</FieldLabel>
-              <div className="flex gap-2">
-                <div className="relative flex-1">
-                  <Input
-                    id="new-password"
-                    type={showPassword ? "text" : "password"}
-                    value={form.password}
-                    onChange={(e) =>
-                      setForm({ ...form, password: e.target.value })
-                    }
-                    autoComplete="new-password"
-                    className="pr-9"
-                    required
-                  />
-                  <button
+          <ScrollArea className="-mx-6 -my-1 flex min-h-0 flex-col">
+            <FieldGroup className="px-6 py-1">
+              <Field>
+                <FieldLabel htmlFor="new-name">Full name</FieldLabel>
+                <Input
+                  id="new-name"
+                  value={form.name}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  autoComplete="off"
+                  required
+                />
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="new-email">Email</FieldLabel>
+                <Input
+                  id="new-email"
+                  type="email"
+                  value={form.email}
+                  onChange={(e) => setForm({ ...form, email: e.target.value })}
+                  autoComplete="off"
+                  required
+                />
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="new-password">Temporary password</FieldLabel>
+                <div className="flex gap-2">
+                  <div className="relative flex-1">
+                    <Input
+                      id="new-password"
+                      type={showPassword ? "text" : "password"}
+                      value={form.password}
+                      onChange={(e) =>
+                        setForm({ ...form, password: e.target.value })
+                      }
+                      autoComplete="new-password"
+                      className="pr-9"
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword((s) => !s)}
+                      className="absolute inset-y-0 right-2 flex items-center text-muted-foreground hover:text-foreground"
+                      aria-label={
+                        showPassword ? "Hide password" : "Show password"
+                      }
+                    >
+                      {showPassword ? (
+                        <EyeOffIcon className="size-4" />
+                      ) : (
+                        <EyeIcon className="size-4" />
+                      )}
+                    </button>
+                  </div>
+                  <Button
                     type="button"
-                    onClick={() => setShowPassword((s) => !s)}
-                    className="absolute inset-y-0 right-2 flex items-center text-muted-foreground hover:text-foreground"
-                    aria-label={
-                      showPassword ? "Hide password" : "Show password"
-                    }
+                    variant="outline"
+                    onClick={() => {
+                      setForm({ ...form, password: generatePassword() });
+                      setShowPassword(true);
+                    }}
                   >
-                    {showPassword ? (
-                      <EyeOffIcon className="size-4" />
-                    ) : (
-                      <EyeIcon className="size-4" />
-                    )}
-                  </button>
+                    <WandSparklesIcon />
+                    Generate
+                  </Button>
                 </div>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => {
-                    setForm({ ...form, password: generatePassword() });
-                    setShowPassword(true);
-                  }}
-                >
-                  <WandSparklesIcon />
-                  Generate
-                </Button>
-              </div>
-              <FieldDescription>
-                At least 8 characters. Share it with the person privately.
-              </FieldDescription>
-            </Field>
+                <FieldDescription>
+                  At least 8 characters. Share it with the person privately.
+                </FieldDescription>
+              </Field>
 
-            <AccessFields
-              idPrefix="new"
-              role={form.role}
-              permissions={form.permissions}
-              onRoleChange={(role) => setForm({ ...form, role })}
-              onPermissionsChange={(permissions) =>
-                setForm({ ...form, permissions })
-              }
-            />
+              <AccessFields
+                idPrefix="new"
+                role={form.role}
+                permissions={form.permissions}
+                onRoleChange={(role) => setForm({ ...form, role })}
+                onPermissionsChange={(permissions) =>
+                  setForm({ ...form, permissions })
+                }
+              />
 
-            {error ? <FieldError>{error}</FieldError> : null}
-          </FieldGroup>
+              {error ? <FieldError>{error}</FieldError> : null}
+            </FieldGroup>
+          </ScrollArea>
 
           <DialogFooter>
             <Button
